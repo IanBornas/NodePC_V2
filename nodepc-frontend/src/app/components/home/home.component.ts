@@ -29,7 +29,7 @@ import { Product } from '../../models/product.model';
 
       <!-- Login Section -->
       <section class="login-section">
-        <div class="login-card">
+        <div class="login-card card">
           <h2>Login to Your Account</h2>
           <p>Access exclusive deals and save your favorite products.</p>
           <button class="btn btn-primary" routerLink="/login">
@@ -52,20 +52,27 @@ import { Product } from '../../models/product.model';
         </div>
 
         <div class="products-grid">
-          <div *ngFor="let product of featuredProducts" class="product-card">
-            <span *ngIf="product.badge" class="badge">{{product.badge}}</span>
-            <div class="product-placeholder">
-              <p>{{product.category}}</p>
+            <div *ngIf="loading" class="loading-card card">
+              <p>Loading products...</p>
             </div>
-            <div class="product-info">
-              <h3>{{product.name}}</h3>
-              <p class="product-description">{{product.description}}</p>
-              <button class="btn-link" [routerLink]="['/products', product.id]">
-                View Details →
-              </button>
+            <div *ngIf="error" class="error-card card">
+              <p>{{error}}</p>
+              <button class="btn btn-primary" (click)="loadFeaturedProducts()">Retry</button>
+            </div>
+            <div *ngFor="let product of featuredProducts" class="product-card card">
+              <span *ngIf="product.badge" class="badge">{{product.badge}}</span>
+              <div class="product-placeholder">
+                <p>{{product.category}}</p>
+              </div>
+              <div class="product-info">
+                <h3>{{product.name}}</h3>
+                <p class="product-description">{{product.description}}</p>
+                <button class="btn-link" [routerLink]="['/products', product.id]">
+                  View Details →
+                </button>
+              </div>
             </div>
           </div>
-        </div>
       </section>
     </div>
   `,
@@ -77,12 +84,13 @@ import { Product } from '../../models/product.model';
     }
 
     .hero {
-      background-color: #666;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       padding: 4rem 2rem;
-      border-radius: 8px;
+      border-radius: 12px;
       margin-bottom: 3rem;
       text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .hero h1 {
@@ -136,9 +144,6 @@ import { Product } from '../../models/product.model';
     }
 
     .login-card {
-      background-color: #f9f9f9;
-      padding: 2rem;
-      border-radius: 8px;
       max-width: 500px;
       margin: 0 auto;
       text-align: center;
@@ -246,10 +251,22 @@ import { Product } from '../../models/product.model';
     .btn-link:hover {
       text-decoration: underline;
     }
+
+    .loading-card, .error-card {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .error-card p {
+      color: #dc3545;
+      margin-bottom: 1rem;
+    }
   `]
 })
 export class HomeComponent implements OnInit {
   featuredProducts: Product[] = [];
+  loading = false;
+  error: string | null = null;
 
   constructor(private productService: ProductService) {}
 
@@ -258,11 +275,16 @@ export class HomeComponent implements OnInit {
   }
 
   loadFeaturedProducts(): void {
+    this.loading = true;
+    this.error = null;
     this.productService.getAllProducts().subscribe({
       next: (products) => {
         this.featuredProducts = products.slice(0, 3);
+        this.loading = false;
       },
       error: (error) => {
+        this.error = 'Failed to load products. Please try again.';
+        this.loading = false;
         console.error('Error loading products:', error);
       }
     });

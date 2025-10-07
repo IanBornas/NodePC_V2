@@ -34,22 +34,46 @@ import { AuthService } from '../../services/auth.service';
 
           <div class="form-group">
             <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              [(ngModel)]="credentials.password"
-              placeholder="Enter your password"
-              required
-              minlength="6"
-              #passwordInput="ngModel">
-            <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message">
+            <div class="password-container">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                name="password"
+                [(ngModel)]="credentials.password"
+                placeholder="Enter your password"
+                required
+                minlength="6"
+                #passwordInput="ngModel"
+                aria-describedby="password-error">
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePassword()"
+                aria-label="Toggle password visibility">
+                {{showPassword ? '🙈' : '👁️'}}
+              </button>
+            </div>
+            <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message" id="password-error">
               Password must be at least 6 characters
             </div>
           </div>
 
+          <div class="form-group checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                [(ngModel)]="rememberMe"
+                name="rememberMe">
+              Remember me
+            </label>
+          </div>
+
           <div *ngIf="errorMessage" class="error-alert">
             {{errorMessage}}
+          </div>
+
+          <div *ngIf="successMessage" class="success-alert">
+            {{successMessage}}
           </div>
 
           <button 
@@ -66,6 +90,19 @@ import { AuthService } from '../../services/auth.service';
             {{isLoading ? 'Logging in...' : 'Login'}}
           </button>
         </form>
+
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <div class="social-login">
+          <button class="btn btn-social btn-google" (click)="socialLogin('google')">
+            Continue with Google
+          </button>
+          <button class="btn btn-social btn-facebook" (click)="socialLogin('facebook')">
+            Continue with Facebook
+          </button>
+        </div>
 
         <div class="divider">
           <span>or</span>
@@ -126,25 +163,51 @@ import { AuthService } from '../../services/auth.service';
 
             <div class="form-group">
               <label for="regPassword">Password</label>
-              <input
-                type="password"
-                id="regPassword"
-                name="regPassword"
-                [(ngModel)]="registerData.password"
-                placeholder="Create a password"
-                required
-                minlength="6">
+              <div class="password-container">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="regPassword"
+                  name="regPassword"
+                  [(ngModel)]="registerData.password"
+                  placeholder="Create a password"
+                  required
+                  minlength="6"
+                  aria-describedby="reg-password-error">
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePassword()"
+                  aria-label="Toggle password visibility">
+                  {{showPassword ? '🙈' : '👁️'}}
+                </button>
+              </div>
+              <div *ngIf="registerForm.submitted && registerForm.controls['regPassword']?.invalid" class="error-message" id="reg-password-error">
+                Password must be at least 6 characters
+              </div>
             </div>
 
             <div class="form-group">
               <label for="confirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                [(ngModel)]="registerData.confirmPassword"
-                placeholder="Confirm your password"
-                required>
+              <div class="password-container">
+                <input
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  [(ngModel)]="registerData.confirmPassword"
+                  placeholder="Confirm your password"
+                  required
+                  aria-describedby="confirm-password-error">
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="toggleConfirmPassword()"
+                  aria-label="Toggle confirm password visibility">
+                  {{showConfirmPassword ? '🙈' : '👁️'}}
+                </button>
+              </div>
+              <div *ngIf="registerForm.submitted && registerData.password !== registerData.confirmPassword" class="error-message" id="confirm-password-error">
+                Passwords do not match
+              </div>
             </div>
 
             <div *ngIf="registerError" class="error-alert">
@@ -156,6 +219,37 @@ import { AuthService } from '../../services/auth.service';
               class="btn btn-primary btn-block"
               [disabled]="registerForm.invalid || isLoading">
               {{isLoading ? 'Creating Account...' : 'Create Account'}}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Forgot Password Modal -->
+      <div *ngIf="showForgotPassword" class="modal-overlay" (click)="closeForgotPassword()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <button class="close-btn" (click)="closeForgotPassword()">✕</button>
+
+          <h2>Reset Password</h2>
+          <p class="subtitle">Enter your email to receive a reset link.</p>
+
+          <form (ngSubmit)="resetPassword(forgotEmail.value)" #forgotForm="ngForm">
+            <div class="form-group">
+              <label for="forgotEmail">Email</label>
+              <input
+                type="email"
+                id="forgotEmail"
+                name="forgotEmail"
+                #forgotEmail
+                placeholder="Enter your email"
+                required
+                email>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              [disabled]="forgotForm.invalid">
+              Send Reset Link
             </button>
           </form>
         </div>
@@ -217,6 +311,75 @@ import { AuthService } from '../../services/auth.service';
       border-color: #000;
     }
 
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-container input {
+      flex: 1;
+      padding-right: 40px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 5px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-weight: normal;
+    }
+
+    .checkbox-group input {
+      margin-right: 0.5rem;
+    }
+
+    .social-login {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-social {
+      background-color: #f5f5f5;
+      color: #333;
+      border: 1px solid #ddd;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+
+    .btn-social:hover {
+      background-color: #e9e9e9;
+    }
+
+    .btn-google:hover {
+      background-color: #f1f1f1;
+    }
+
+    .btn-facebook:hover {
+      background-color: #e7f3ff;
+    }
+
     .error-message {
       color: #dc3545;
       font-size: 0.875rem;
@@ -226,6 +389,15 @@ import { AuthService } from '../../services/auth.service';
     .error-alert {
       background-color: #f8d7da;
       color: #842029;
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .success-alert {
+      background-color: #d1edff;
+      color: #0c63e4;
       padding: 0.75rem;
       border-radius: 4px;
       margin-bottom: 1rem;
@@ -376,6 +548,11 @@ export class LoginComponent {
   isLoading = false;
   errorMessage = '';
   registerError = '';
+  successMessage = '';
+  rememberMe = false;
+  showPassword = false;
+  showConfirmPassword = false;
+  showForgotPassword = false;
 
   constructor(
     private authService: AuthService,
@@ -385,11 +562,15 @@ export class LoginComponent {
   login(): void {
     this.isLoading = true;
     this.errorMessage = '';
+    this.successMessage = '';
 
     this.authService.login(this.credentials.email, this.credentials.password).subscribe({
       next: (user) => {
         this.isLoading = false;
-        this.router.navigate(['/products']);
+        this.successMessage = 'Login successful!';
+        setTimeout(() => {
+          this.router.navigate(['/products']);
+        }, 1000);
       },
       error: (error) => {
         this.isLoading = false;
@@ -407,6 +588,7 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.registerError = '';
+    this.successMessage = '';
 
     const userData = {
       firstName: this.registerData.firstName,
@@ -418,9 +600,12 @@ export class LoginComponent {
     this.authService.register(userData).subscribe({
       next: (user) => {
         this.isLoading = false;
-        this.showRegister = false;
-        alert('Account created successfully! Please log in.');
-        this.credentials.email = this.registerData.email;
+        this.successMessage = 'Account created successfully!';
+        setTimeout(() => {
+          this.showRegister = false;
+          this.credentials.email = this.registerData.email;
+          this.successMessage = '';
+        }, 2000);
       },
       error: (error) => {
         this.isLoading = false;
@@ -430,7 +615,29 @@ export class LoginComponent {
     });
   }
 
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
   forgotPassword(): void {
-    alert('Password reset functionality will be implemented soon!');
+    this.showForgotPassword = true;
+  }
+
+  resetPassword(email: string): void {
+    // Placeholder for password reset
+    alert(`Password reset link sent to ${email}. (Backend integration pending)`);
+    this.showForgotPassword = false;
+  }
+
+  closeForgotPassword(): void {
+    this.showForgotPassword = false;
+  }
+
+  socialLogin(provider: string): void {
+    alert(`${provider} login will be implemented soon!`);
   }
 }

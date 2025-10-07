@@ -167,8 +167,13 @@ import { CartService } from './services/cart.service';
   `]
 })
 export class AppComponent {
-  currentUser$ = this.authService.currentUser$;
-  cartCount$ = this.cartService.cartItems$;
+  get currentUser$() {
+    return this.authService.currentUser$;
+  }
+
+  get cartCount$() {
+    return this.cartService.cartItems$;
+  }
 
   constructor(
     private authService: AuthService,

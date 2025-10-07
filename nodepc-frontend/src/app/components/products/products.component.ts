@@ -6,12 +6,14 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product.model';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, NavbarComponent],
   template: `
+    <app-navbar></app-navbar>
     <div class="products-container">
       <!-- Sidebar -->
       <aside class="sidebar">

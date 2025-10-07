@@ -7,6 +7,7 @@ import { CartComponent } from './components/cart/cart.component';
 import { OrdersComponent } from './components/orders/orders.component';
 import { LoginComponent } from './components/login/login.component';
 import { AdminDashboardComponent } from './components/admin/admin-dashboard.component';
+import { AboutComponent } from './components/about/about.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'orders', component: OrdersComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'admin', component: AdminDashboardComponent },
   { path: '**', redirectTo: '' }
 ];

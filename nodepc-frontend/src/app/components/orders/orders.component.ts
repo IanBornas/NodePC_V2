@@ -5,12 +5,14 @@ import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { AuthService } from '../../services/auth.service';
 import { Order, OrderStatus } from '../../models/order.model';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NavbarComponent],
   template: `
+    <app-navbar></app-navbar>
     <div class="orders-container">
       <h1>My Orders</h1>
 

@@ -1,3 +1,5 @@
 <main>
-  <router-outlet></router-outlet>
+  <div [@routeAnimations]="outlet.activatedRouteData['animation']">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
 </main>

@@ -10,13 +10,13 @@ import { AdminDashboardComponent } from './components/admin/admin-dashboard.comp
 import { AboutComponent } from './components/about/about.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'products', component: ProductsComponent },
+  { path: '', component: HomeComponent, data: { animation: 'fade' } },
+  { path: 'products', component: ProductsComponent, data: { animation: 'fade' } },
   { path: 'products/:id', component: ProductDetailComponent },
   { path: 'cart', component: CartComponent },
-  { path: 'orders', component: OrdersComponent },
+  { path: 'orders', component: OrdersComponent, data: { animation: 'fade' } },
   { path: 'login', component: LoginComponent },
-  { path: 'about', component: AboutComponent },
+  { path: 'about', component: AboutComponent, data: { animation: 'fade' } },
   { path: 'admin', component: AdminDashboardComponent },
   { path: '**', redirectTo: '' }
 ];

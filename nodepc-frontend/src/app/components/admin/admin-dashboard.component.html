@@ -1,0 +1,233 @@
+    <div class="admin-container">
+      <h1>NodePC Admin Dashboard</h1>
+      <p class="subtitle">Manage your ecommerce operations efficiently</p>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button
+          class="tab"
+          [class.active]="activeTab === 'overview'"
+          (click)="activeTab = 'overview'">
+          Overview
+        </button>
+        <button
+          class="tab"
+          [class.active]="activeTab === 'products'"
+          (click)="activeTab = 'products'">
+          Products
+        </button>
+        <button
+          class="tab"
+          [class.active]="activeTab === 'orders'"
+          (click)="activeTab = 'orders'">
+          Orders
+        </button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div *ngIf="activeTab === 'overview'" class="tab-content">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Revenue</h3>
+            <p class="stat-value">₱{{totalRevenue}}</p>
+            <p class="stat-change positive">+10%</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Orders</h3>
+            <p class="stat-value">{{totalOrders}}</p>
+            <p class="stat-change positive">+3%</p>
+          </div>
+          <div class="stat-card">
+            <h3>Avg. Order Value</h3>
+            <p class="stat-value">₱{{avgOrderValue}}</p>
+            <p class="stat-change positive">+4%</p>
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <h2>Sales Trends</h2>
+          <div class="chart-placeholder">
+            <p>Sales chart will be displayed here</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Tab -->
+      <div *ngIf="activeTab === 'products'" class="tab-content">
+        <div class="section-header">
+          <h2>Latest PC Parts</h2>
+          <p>Affordable prices on latest technology</p>
+          <button class="btn btn-primary" (click)="showProductForm = true">
+            Add New Product
+          </button>
+        </div>
+
+        <div class="products-grid">
+          <div *ngFor="let product of products" class="product-card-admin">
+            <span *ngIf="product.badge" class="badge">{{product.badge}}</span>
+            <div class="product-image">
+              <p>{{product.category}}</p>
+            </div>
+            <div class="product-info">
+              <h3>{{product.name}}</h3>
+              <p class="price">₱{{product.price}}</p>
+              <p class="stock">Stock: {{product.stock}}</p>
+              <div class="product-actions">
+                <button class="btn btn-sm btn-secondary" (click)="editProduct(product)">
+                  Edit
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteProduct(product.id)">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Tab -->
+      <div *ngIf="activeTab === 'orders'" class="tab-content">
+        <h2>All Orders</h2>
+
+        <div class="orders-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of orders">
+                <td>#{{order.id}}</td>
+                <td>Customer {{order.customerId}}</td>
+                <td>{{order.orderDate | date:'short'}}</td>
+                <td>₱{{order.totalAmount}}</td>
+                <td>
+                  <select
+                    [(ngModel)]="order.status"
+                    (change)="updateOrderStatus(order)"
+                    class="status-select"
+                    name="status"
+                    aria-label="Order Status">
+                    <option value="PENDING">Pending</option>
+                    <option value="PROCESSING">Processing</option>
+                    <option value="SHIPPED">Shipped</option>
+                    <option value="DELIVERED">Delivered</option>
+                    <option value="CANCELLED">Cancelled</option>
+                  </select>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-secondary" (click)="viewOrder(order)">
+                    View
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Product Form Modal -->
+      <div *ngIf="showProductForm" class="modal-overlay" (click)="closeProductForm()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <button class="close-btn" (click)="closeProductForm()">✕</button>
+
+          <h2>{{editingProduct ? 'Edit Product' : 'Add New Product'}}</h2>
+
+          <form (ngSubmit)="saveProduct()" #productForm="ngForm">
+            <div class="form-group">
+              <label for="name">Product Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                [(ngModel)]="productData.name"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                [(ngModel)]="productData.description"
+                rows="3"
+                required></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="price">Price</label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  [(ngModel)]="productData.price"
+                  step="0.01"
+                  min="0"
+                  required>
+              </div>
+
+              <div class="form-group">
+                <label for="stock">Stock</label>
+                <input
+                  type="number"
+                  id="stock"
+                  name="stock"
+                  [(ngModel)]="productData.stock"
+                  min="0"
+                  required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="category">Category</label>
+                <select
+                  id="category"
+                  name="category"
+                  [(ngModel)]="productData.category"
+                  required>
+                  <option value="">Select category</option>
+                  <option value="Graphics Card">Graphics Card</option>
+                  <option value="Gaming CPU">Gaming CPU</option>
+                  <option value="Motherboard">Motherboard</option>
+                  <option value="High-speed RAM">High-speed RAM</option>
+                  <option value="SSD">SSD</option>
+                  <option value="Cooling Fan">Cooling Fan</option>
+                  <option value="Power Supply">Power Supply</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="badge">Badge (Optional)</label>
+                <select
+                  id="badge"
+                  name="badge"
+                  [(ngModel)]="productData.badge">
+                  <option value="">None</option>
+                  <option value="Best Seller">Best Seller</option>
+                  <option value="New Arrival">New Arrival</option>
+                  <option value="Top Rated">Top Rated</option>
+                  <option value="On Sale">On Sale</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" (click)="closeProductForm()">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">
+                {{editingProduct ? 'Update' : 'Create'}} Product
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>

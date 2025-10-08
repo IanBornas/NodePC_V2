@@ -11,6 +11,26 @@
   padding: 3rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+/* Back Arrow */
+.back-arrow {
+  position: absolute;
+  top: 2.5rem;
+  left: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.back-arrow:hover {
+  background-color: #f5f5f5;
 }
 
 /* Headings */

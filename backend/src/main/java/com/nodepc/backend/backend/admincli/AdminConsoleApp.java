@@ -112,7 +112,8 @@ public class AdminConsoleApp {
         String desc = scanner.nextLine();
         StringBuilder sb = new StringBuilder("{");
         boolean first = true;
-        if (!name.isBlank()) { if (!first) sb.append(","); sb.append("\"name\":\"").append(escape(name)).append("\""); first=false;}
+        if (!name.isBlank()) {
+            sb.append("\"name\":\"").append(escape(name)).append("\""); first=false;}
         if (!price.isBlank()) { if (!first) sb.append(","); sb.append("\"price\":").append(price); first=false;}
         if (!desc.isBlank()) { if (!first) sb.append(","); sb.append("\"description\":\"").append(escape(desc)).append("\""); first=false;}
         sb.append("}");

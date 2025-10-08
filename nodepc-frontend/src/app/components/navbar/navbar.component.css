@@ -9,9 +9,11 @@
 
 .primary { margin-left: 24px; flex:1 1 auto; }
 .links { display:flex; gap:8px; list-style:none; margin:0; padding:0; align-items:center; }
-.links li a { color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:600; display:inline-block; }
+.links li a { color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:8px; font-weight:600; display:inline-block; position:relative; transition: all 0.3s ease; }
+.links li a::after { content:''; position:absolute; bottom:0; left:50%; width:0; height:2px; background:var(--accent); transition: width 0.3s ease, left 0.3s ease; }
 .links li a:hover, .links li a:focus { color:var(--fg); background: rgba(109,40,217,0.06); outline: none; }
-.links li a.active { color: var(--accent); background: rgba(109,40,217,0.08); }
+.links li a.active { color: var(--accent); background: rgba(109,40,217,0.08); transform: scale(1.05); }
+.links li a.active::after { width:100%; left:0; }
 
 .controls { display:flex; align-items:center; gap:8px; margin-left:auto; }
 

@@ -167,7 +167,7 @@
       </div>
 
       <!-- Enhanced Empty State -->
-      <div *ngIf="!loading && filteredProducts.length === 0" class="empty-state" role="status" aria-live="polite">
+      <div *ngIf="!loading && filteredProducts.length === 0" class="empty-state" role="status" aria-live="polite" @fadeIn>
         <div class="empty-state-content">
           <div class="empty-illustration">
             <svg viewBox="0 0 200 150" class="empty-svg">
@@ -232,7 +232,7 @@
 </div>
 
 <!-- Quick View Modal -->
-<div *ngIf="selectedProduct" class="modal-overlay" (click)="closeQuickView()" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<div *ngIf="selectedProduct" class="modal-overlay" (click)="closeQuickView()" role="dialog" aria-modal="true" aria-labelledby="modal-title" @fadeIn>
   <div class="modal-content" (click)="$event.stopPropagation()">
     <button class="modal-close" (click)="closeQuickView()" aria-label="Close modal">×</button>
     <div class="modal-body">

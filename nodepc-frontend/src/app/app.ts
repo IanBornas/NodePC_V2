@@ -9,16 +9,13 @@ import { trigger, transition, style, animate, query } from '@angular/animations'
   styleUrl: './app.scss',
   animations: [
     trigger('routeAnimations', [
-      transition('fade <=> fade', [
-        query(':enter', [
-          style({ opacity: 0 })
-        ], { optional: true }),
+      transition('* <=> *', [
         query(':leave', [
-          animate('0.3s', style({ opacity: 0 }))
+          animate('0.3s ease-in', style({ opacity: 0, transform: 'translateY(-20px)' }))
         ], { optional: true }),
         query(':enter', [
-          style({ opacity: 0 }),
-          animate('0.3s', style({ opacity: 1 }))
+          style({ opacity: 0, transform: 'translateY(20px)' }),
+          animate('1.5s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
         ], { optional: true })
       ])
     ])

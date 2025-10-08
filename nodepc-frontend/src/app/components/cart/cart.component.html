@@ -6,14 +6,14 @@
     <h1>Shopping Cart</h1>
   </div>
 
-  <div *ngIf="cartItems.length === 0" class="empty-cart">
+  <div *ngIf="cartItems.length === 0" class="empty-cart" @fadeIn>
     <p>Your cart is empty</p>
     <button class="btn btn-primary" routerLink="/products">
       Continue Shopping
     </button>
   </div>
 
-  <div *ngIf="cartItems.length > 0" class="cart-content">
+  <div *ngIf="cartItems.length > 0" class="cart-content" @fadeIn>
     <div class="cart-items">
       <div *ngFor="let item of cartItems" class="cart-item">
         <div class="item-image">

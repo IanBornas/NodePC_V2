@@ -12,11 +12,11 @@ import { AboutComponent } from './components/about/about.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent, data: { animation: 'fade' } },
   { path: 'products', component: ProductsComponent, data: { animation: 'fade' } },
-  { path: 'products/:id', component: ProductDetailComponent },
-  { path: 'cart', component: CartComponent },
+  { path: 'products/:id', component: ProductDetailComponent, data: { animation: 'fade' } },
+  { path: 'cart', component: CartComponent, data: { animation: 'fade' } },
   { path: 'orders', component: OrdersComponent, data: { animation: 'fade' } },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, data: { animation: 'fade' } },
   { path: 'about', component: AboutComponent, data: { animation: 'fade' } },
-  { path: 'admin', component: AdminDashboardComponent },
+  { path: 'admin', component: AdminDashboardComponent, data: { animation: 'fade' } },
   { path: '**', redirectTo: '' }
 ];

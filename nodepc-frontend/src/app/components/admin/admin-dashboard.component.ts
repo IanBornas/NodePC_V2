@@ -45,7 +45,7 @@ import { Order } from '../../models/order.model';
         <div class="stats-grid">
           <div class="stat-card">
             <h3>Total Revenue</h3>
-            <p class="stat-value">\${{totalRevenue}}</p>
+            <p class="stat-value">₱{{totalRevenue}}</p>
             <p class="stat-change positive">+10%</p>
           </div>
           <div class="stat-card">
@@ -55,7 +55,7 @@ import { Order } from '../../models/order.model';
           </div>
           <div class="stat-card">
             <h3>Avg. Order Value</h3>
-            <p class="stat-value">\${{avgOrderValue}}</p>
+            <p class="stat-value">₱{{avgOrderValue}}</p>
             <p class="stat-change positive">+4%</p>
           </div>
         </div>
@@ -86,7 +86,7 @@ import { Order } from '../../models/order.model';
             </div>
             <div class="product-info">
               <h3>{{product.name}}</h3>
-              <p class="price">\${{product.price}}</p>
+              <p class="price">₱{{product.price}}</p>
               <p class="stock">Stock: {{product.stock}}</p>
               <div class="product-actions">
                 <button class="btn btn-sm btn-secondary" (click)="editProduct(product)">
@@ -122,7 +122,7 @@ import { Order } from '../../models/order.model';
                 <td>#{{order.id}}</td>
                 <td>Customer {{order.customerId}}</td>
                 <td>{{order.orderDate | date:'short'}}</td>
-                <td>\${{order.totalAmount}}</td>
+                <td>₱{{order.totalAmount}}</td>
                 <td>
                   <select 
                     [(ngModel)]="order.status" 

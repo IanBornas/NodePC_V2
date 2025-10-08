@@ -48,16 +48,16 @@ import { NavbarComponent } from '../navbar/navbar.component';
             <div *ngFor="let item of order.items" class="order-item">
               <div class="item-info">
                 <p class="item-name">{{item.productName}}</p>
-                <p class="item-details">Quantity: {{item.quantity}} × \${{item.price}}</p>
+                <p class="item-details">Quantity: {{item.quantity}} × ₱{{item.price}}</p>
               </div>
-              <p class="item-total">\${{item.quantity * item.price}}</p>
+              <p class="item-total">₱{{item.quantity * item.price}}</p>
             </div>
           </div>
 
           <div class="order-footer">
             <div class="order-total">
               <span>Total:</span>
-              <span class="total-amount">\${{order.totalAmount}}</span>
+              <span class="total-amount">₱{{order.totalAmount}}</span>
             </div>
             <div class="order-actions">
               <button class="btn btn-secondary btn-sm" (click)="viewOrderDetails(order.id)">

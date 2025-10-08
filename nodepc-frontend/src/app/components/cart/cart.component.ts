@@ -14,7 +14,12 @@ import { CartItem } from '../../models/cart-item.model';
   imports: [CommonModule, RouterLink, FormsModule],
   template: `
     <div class="cart-container">
-      <h1>Shopping Cart</h1>
+      <div class="cart-header">
+        <button class="btn btn-secondary back-btn" routerLink="/" aria-label="Back to main menu">
+          ←
+        </button>
+        <h1>Shopping Cart</h1>
+      </div>
 
       <div *ngIf="cartItems.length === 0" class="empty-cart">
         <p>Your cart is empty</p>
@@ -33,7 +38,7 @@ import { CartItem } from '../../models/cart-item.model';
             <div class="item-details">
               <h3>{{item.product.name}}</h3>
               <p class="item-description">{{item.product.description}}</p>
-              <p class="item-price">\${{item.product.price}}</p>
+              <p class="item-price">₱{{item.product.price}}</p>
             </div>
 
             <div class="item-quantity">
@@ -62,7 +67,7 @@ import { CartItem } from '../../models/cart-item.model';
 
             <div class="item-total">
               <p class="total-label">Total:</p>
-              <p class="total-price">\${{item.product.price * item.quantity}}</p>
+              <p class="total-price">₱{{item.product.price * item.quantity}}</p>
             </div>
 
             <button 
@@ -79,24 +84,24 @@ import { CartItem } from '../../models/cart-item.model';
           
           <div class="summary-row">
             <span>Subtotal:</span>
-            <span>\${{getSubtotal()}}</span>
+            <span>₱{{getSubtotal()}}</span>
           </div>
           
           <div class="summary-row">
             <span>Shipping:</span>
-            <span>\${{shippingCost}}</span>
+            <span>₱{{shippingCost}}</span>
           </div>
           
           <div class="summary-row">
             <span>Tax ({{taxRate * 100}}%):</span>
-            <span>\${{getTax()}}</span>
+            <span>₱{{getTax()}}</span>
           </div>
           
           <hr>
           
           <div class="summary-row total">
             <span>Total:</span>
-            <span>\${{getTotal()}}</span>
+            <span>₱{{getTotal()}}</span>
           </div>
 
           <button 
@@ -126,8 +131,38 @@ import { CartItem } from '../../models/cart-item.model';
       padding: 2rem;
     }
 
-    h1 {
+    .cart-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       margin-bottom: 2rem;
+    }
+
+    .back-btn {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      font-size: 1.5rem;
+      border-radius: 50%;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #667eea;
+      background: white;
+      color: #667eea;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: #667eea;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    h1 {
+      margin: 0;
+      flex: 1;
     }
 
     .empty-cart {
@@ -363,6 +398,19 @@ import { CartItem } from '../../models/cart-item.model';
     }
 
     @media (max-width: 968px) {
+      .cart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .back-btn {
+        align-self: flex-start;
+        width: 44px;
+        height: 44px;
+        font-size: 1.3rem;
+      }
+
       .cart-content {
         grid-template-columns: 1fr;
       }

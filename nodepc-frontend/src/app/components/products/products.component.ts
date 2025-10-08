@@ -1,413 +1,340 @@
 // src/app/components/products/products.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product.model';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-products',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, NavbarComponent],
-  template: `
-    <app-navbar></app-navbar>
-    <div class="products-container">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <h3>Categories</h3>
-        <ul class="category-list">
-          <li>
-            <button 
-              (click)="filterByCategory(null)" 
-              [class.active]="selectedCategory === null">
-              All Products
-            </button>
-          </li>
-          <li>
-            <button 
-              (click)="filterByCategory('Desktops')" 
-              [class.active]="selectedCategory === 'Desktops'">
-              🖥️ Desktops
-            </button>
-          </li>
-          <li>
-            <button 
-              (click)="filterByCategory('Peripherals')" 
-              [class.active]="selectedCategory === 'Peripherals'">
-              🖱️ Peripherals
-            </button>
-          </li>
-          <li>
-            <button 
-              (click)="filterByCategory('Laptops')" 
-              [class.active]="selectedCategory === 'Laptops'">
-              💻 Laptops
-            </button>
-          </li>
-          <li>
-            <button 
-              (click)="filterByCategory('Storage')" 
-              [class.active]="selectedCategory === 'Storage'">
-              💾 Storage
-            </button>
-          </li>
-          <li>
-            <button 
-              (click)="filterByCategory('Components')" 
-              [class.active]="selectedCategory === 'Components'">
-              🔧 Components
-            </button>
-          </li>
-        </ul>
-      </aside>
-
-      <!-- Main Content -->
-      <main class="main-content">
-        <!-- Hero Section -->
-        <section class="hero">
-          <div class="hero-content">
-            <h1>Build Your Dream PC</h1>
-            <p>Explore the latest and most affordable PC parts</p>
-            <div class="hero-buttons">
-              <button class="btn btn-secondary">Learn More</button>
-              <button class="btn btn-primary">Shop Now</button>
-            </div>
-          </div>
-          <div class="hero-image"></div>
-        </section>
-
-        <!-- Featured Products Section -->
-        <section class="featured-section">
-          <div class="section-header">
-            <div class="placeholder-img"></div>
-            <div>
-              <h2>Featured Products</h2>
-              <p>Best deals on PC components</p>
-              <button class="btn btn-primary">View All</button>
-            </div>
-          </div>
-
-          <div class="products-grid">
-            <div *ngFor="let product of filteredProducts" class="product-card">
-              <span *ngIf="product.badge" class="badge">{{product.badge}}</span>
-              
-              <div class="product-image">
-                <p>{{product.category}}</p>
-              </div>
-              
-              <div class="product-info">
-                <h3>{{product.name}}</h3>
-                <p class="price">\${{product.price}}</p>
-                <p class="stock" [class.low-stock]="product.stock < 10">
-                  {{product.stock > 0 ? 'In Stock: ' + product.stock : 'Out of Stock'}}
-                </p>
-                
-                <div class="product-actions">
-                  <button 
-                    class="btn btn-primary btn-sm" 
-                    (click)="addToCart(product)"
-                    [disabled]="product.stock === 0">
-                    Add to Cart
-                  </button>
-                  <button 
-                    class="btn btn-secondary btn-sm" 
-                    [routerLink]="['/products', product.id]">
-                    View Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="filteredProducts.length === 0" class="no-products">
-            <p>No products found in this category.</p>
-          </div>
-        </section>
-      </main>
-    </div>
-  `,
-  styles: [`
-    .products-container {
-      display: flex;
-      gap: 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .sidebar {
-      width: 200px;
-      flex-shrink: 0;
-      background-color: #f9f9f9;
-      padding: 1.5rem;
-      border-radius: 8px;
-      height: fit-content;
-      position: sticky;
-      top: 2rem;
-    }
-
-    .sidebar h3 {
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-    }
-
-    .category-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .category-list li {
-      margin-bottom: 0.5rem;
-    }
-
-    .category-list button {
-      width: 100%;
-      text-align: left;
-      background: none;
-      border: none;
-      padding: 0.75rem;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 0.95rem;
-    }
-
-    .category-list button:hover {
-      background-color: #e0e0e0;
-    }
-
-    .category-list button.active {
-      background-color: #000;
-      color: white;
-    }
-
-    .main-content {
-      flex: 1;
-    }
-
-    .hero {
-      display: flex;
-      gap: 2rem;
-      background-color: #666;
-      color: white;
-      padding: 3rem;
-      border-radius: 8px;
-      margin-bottom: 3rem;
-    }
-
-    .hero-content {
-      flex: 1;
-    }
-
-    .hero h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      margin-bottom: 1.5rem;
-      font-size: 1.1rem;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .hero-image {
-      width: 300px;
-      height: 200px;
-      background-color: #888;
-      border-radius: 8px;
-      flex-shrink: 0;
-    }
-
-    .featured-section {
-      margin-bottom: 3rem;
-    }
-
-    .section-header {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .placeholder-img {
-      width: 120px;
-      height: 120px;
-      background-color: #e0e0e0;
-      border-radius: 8px;
-      flex-shrink: 0;
-    }
-
-    .section-header h2 {
-      margin-bottom: 0.5rem;
-    }
-
-    .section-header p {
-      color: #666;
-      margin-bottom: 1rem;
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .product-card {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      overflow: hidden;
-      position: relative;
-      transition: box-shadow 0.3s;
-    }
-
-    .product-card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background-color: #f0f0f0;
-      padding: 0.25rem 0.75rem;
-      border-radius: 4px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      z-index: 1;
-    }
-
-    .product-image {
-      background-color: #e0e0e0;
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      color: #666;
-    }
-
-    .product-info {
-      padding: 1.5rem;
-    }
-
-    .product-info h3 {
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
-    }
-
-    .price {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin: 0.5rem 0;
-    }
-
-    .stock {
-      font-size: 0.9rem;
-      color: #28a745;
-      margin-bottom: 1rem;
-    }
-
-    .stock.low-stock {
-      color: #ffc107;
-    }
-
-    .product-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .btn-sm {
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
-    }
-
-    .btn-primary {
-      background-color: #000;
-      color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background-color: #333;
-    }
-
-    .btn-primary:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      color: #000;
-      border: 1px solid #000;
-    }
-
-    .btn-secondary:hover {
-      background-color: #f5f5f5;
-    }
-
-    .no-products {
-      text-align: center;
-      padding: 3rem;
-      color: #666;
-    }
-  `]
+  templateUrl: './products.component.html',
+  styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   filteredProducts: Product[] = [];
   selectedCategory: string | null = null;
+  loading = true;
+  searchQuery = '';
+  sortBy = 'relevance';
+  priceMin: number | null = null;
+  priceMax: number | null = null;
+  viewMode = 'grid';
+  selectedProduct: Product | null = null;
+  skeletonArray = Array(6).fill(0);
+  allProductsCount = 0;
+  popularProducts: Product[] = [];
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  activeFilters: { label: string; type: string }[] = [];
+
+
+
+  // Recently restocked products
+  recentlyRestocked: Product[] = [];
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService
+    private cartService: CartService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadProducts();
+
+    // Initialize from URL params
+    this.route.queryParams.subscribe(params => {
+      this.searchQuery = params['search'] || '';
+      this.selectedCategory = params['category'] || null;
+      this.sortBy = params['sort'] || 'relevance';
+      this.priceMin = params['min'] ? +params['min'] : null;
+      this.priceMax = params['max'] ? +params['max'] : null;
+      this.viewMode = params['view'] || 'grid';
+      this.applyFilters();
+    });
+
+    // Debounced search
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.searchQuery = query;
+      this.updateUrl();
+      this.applyFilters();
+    });
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // Empty state methods
+  getEmptyStateTitle(): string {
+    if (this.searchQuery || this.selectedCategory || this.priceMin || this.priceMax) {
+      return 'No products match your filters';
+    }
+    return 'Out of stock right now';
+  }
+
+  getEmptyStateMessage(): string {
+    if (this.searchQuery || this.selectedCategory || this.priceMin || this.priceMax) {
+      return 'No results for your current filters. Try adjusting your search or clearing filters.';
+    }
+    return 'We\'re currently out of stock for this category. Sign up to be notified when items become available.';
+  }
+
+
 
   loadProducts(): void {
     this.productService.getAllProducts().subscribe({
       next: (products) => {
         this.products = products;
-        this.filteredProducts = products;
+        this.allProductsCount = products.length;
+        // Get popular products (mock: highest priced items)
+        this.popularProducts = [...products]
+          .sort((a, b) => b.price - a.price)
+          .slice(0, 6);
+        this.loading = false;
+        this.applyFilters();
       },
       error: (error) => {
         console.error('Error loading products:', error);
+        this.loading = false;
       }
     });
   }
 
   filterByCategory(category: string | null): void {
     this.selectedCategory = category;
-    
-    if (category === null) {
-      this.filteredProducts = this.products;
-    } else {
-      this.filteredProducts = this.products.filter(
-        p => p.category === category
+    this.updateUrl();
+    this.applyFilters();
+  }
+
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchQuery);
+  }
+
+  onSortChange(): void {
+    this.updateUrl();
+    this.applyFilters();
+  }
+
+  onPriceChange(): void {
+    this.updateUrl();
+    this.applyFilters();
+  }
+
+  applyFilters(): void {
+    if (this.loading) return;
+
+    let filtered = [...this.products];
+
+    // Category filter
+    if (this.selectedCategory) {
+      filtered = filtered.filter(p => p.category === this.selectedCategory);
+    }
+
+    // Search filter
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query)
       );
     }
+
+    // Price filter
+    if (this.priceMin !== null) {
+      filtered = filtered.filter(p => p.price >= this.priceMin!);
+    }
+    if (this.priceMax !== null) {
+      filtered = filtered.filter(p => p.price <= this.priceMax!);
+    }
+
+    // Sort
+    switch (this.sortBy) {
+      case 'price-low':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'newest':
+        // Assuming products have an id or date, sort by id descending
+        filtered.sort((a, b) => b.id - a.id);
+        break;
+      default:
+        // Relevance - keep original order
+        break;
+    }
+
+    this.filteredProducts = filtered;
+    this.updateActiveFilters();
+  }
+
+  updateActiveFilters(): void {
+    this.activeFilters = [];
+    if (this.selectedCategory) {
+      this.activeFilters.push({ label: this.selectedCategory, type: 'category' });
+    }
+    if (this.searchQuery) {
+      this.activeFilters.push({ label: `Search: ${this.searchQuery}`, type: 'search' });
+    }
+    if (this.priceMin !== null || this.priceMax !== null) {
+      const min = this.priceMin || 0;
+      const max = this.priceMax || '∞';
+      this.activeFilters.push({ label: `Price: ₱${min} - ₱${max}`, type: 'price' });
+    }
+  }
+
+  removeFilter(filter: { label: string; type: string }): void {
+    switch (filter.type) {
+      case 'category':
+        this.selectedCategory = null;
+        break;
+      case 'search':
+        this.searchQuery = '';
+        break;
+      case 'price':
+        this.priceMin = null;
+        this.priceMax = null;
+        break;
+    }
+    this.updateUrl();
+    this.applyFilters();
+  }
+
+  clearAllFilters(): void {
+    this.selectedCategory = null;
+    this.searchQuery = '';
+    this.priceMin = null;
+    this.priceMax = null;
+    this.sortBy = 'relevance';
+    this.updateUrl();
+    this.applyFilters();
+  }
+
+  searchFor(term: string): void {
+    this.searchQuery = term;
+    this.updateUrl();
+    this.applyFilters();
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+    localStorage.setItem('productViewMode', mode);
+    this.updateUrl();
+  }
+
+  scrollToCategories(): void {
+    document.querySelector('.sidebar')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  getSectionTitle(): string {
+    if (this.selectedCategory) {
+      return `${this.selectedCategory} (${this.filteredProducts.length})`;
+    }
+    if (this.searchQuery) {
+      return `Search Results for "${this.searchQuery}" (${this.filteredProducts.length})`;
+    }
+    return `All Products (${this.filteredProducts.length})`;
+  }
+
+  getCategoryCount(category: string): number {
+    return this.products.filter(p => p.category === category).length;
+  }
+
+  getVisibleCategories(): { name: string; count: number; emoji: string }[] {
+    const categories = [
+      { name: 'Desktops', emoji: '🖥️' },
+      { name: 'Peripherals', emoji: '🖱️' },
+      { name: 'Laptops', emoji: '💻' },
+      { name: 'Storage', emoji: '💾' },
+      { name: 'Components', emoji: '🔧' }
+    ];
+
+    return categories
+      .map(cat => ({
+        ...cat,
+        count: this.getCategoryCount(cat.name)
+      }))
+      .filter(cat => cat.count > 0);
+  }
+
+
+  quickView(product: Product): void {
+    this.selectedProduct = product;
+  }
+
+  closeQuickView(): void {
+    this.selectedProduct = null;
+  }
+
+  trackByProductId(index: number, product: Product): number {
+    return product.id;
+  }
+
+  updateUrl(): void {
+    const params: any = {};
+    if (this.searchQuery) params.search = this.searchQuery;
+    if (this.selectedCategory) params.category = this.selectedCategory;
+    if (this.sortBy !== 'relevance') params.sort = this.sortBy;
+    if (this.priceMin !== null) params.min = this.priceMin;
+    if (this.priceMax !== null) params.max = this.priceMax;
+    if (this.viewMode !== 'grid') params.view = this.viewMode;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge'
+    });
   }
 
   addToCart(product: Product): void {
     this.cartService.addToCart(product, 1);
     alert(`${product.name} added to cart!`);
+  }
+
+  isNewProduct(product: Product): boolean {
+    // Mock logic - consider products with ID > 10 as new
+    return product.id > 10;
+  }
+
+  isBestSeller(product: Product): boolean {
+    // Mock logic - consider products with price > 500 as best sellers
+    return product.price > 500;
+  }
+
+  getStars(product: Product): string {
+    // Mock rating - generate random 3-5 stars
+    const rating = Math.floor(Math.random() * 3) + 3;
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+  }
+
+  getReviewCount(product: Product): number {
+    // Mock review count
+    return Math.floor(Math.random() * 200) + 10;
+  }
+
+  getShippingETA(product: Product): string {
+    if (product.stock > 0) {
+      return product.stock > 5 ? 'Ships today' : 'Ships in 1-2 days';
+    }
+    return 'Preorder - ships in 2 weeks';
+  }
+
+  requestQuote(): void {
+    alert('Quote request functionality would be implemented here. Contact sales@nodepc.com for wholesale pricing.');
   }
 }

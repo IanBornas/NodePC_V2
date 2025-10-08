@@ -43,7 +43,7 @@ import { Product } from '../../models/product.model';
           </div>
 
           <div class="price-section">
-            <p class="price">\${{product.price}}</p>
+            <p class="price">₱{{product.price}}</p>
             <p class="stock" [class.low-stock]="product.stock < 10" [class.out-of-stock]="product.stock === 0">
               {{product.stock > 0 ? 'In Stock: ' + product.stock : 'Out of Stock'}}
             </p>

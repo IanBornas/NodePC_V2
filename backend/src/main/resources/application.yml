@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: nodepc-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/nodepcdb
+    username: root
+    password: admin
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET:YourVeryLongAndSecureSecretKeyForJWTTokenGenerationMinimum256Bits123456789}
+  expiration-ms: 3600000
+
+logging:
+  level:
+    org.springframework: INFO
+    com.nodepc: DEBUG
+
+cors:
+  allowed-origins:
+    - "http://localhost:4200"
+    - "http://127.0.0.1:4200"
+
+
+# Added/ensured by patch script
+

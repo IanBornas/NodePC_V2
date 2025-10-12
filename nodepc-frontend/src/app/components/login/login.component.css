@@ -22,6 +22,28 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* Back Button */
+.back-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+  background-color: rgba(102, 126, 234, 0.1);
+}
+
 /* Logo Header */
 .logo-header {
   text-align: center;

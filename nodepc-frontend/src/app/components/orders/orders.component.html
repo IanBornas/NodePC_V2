@@ -9,14 +9,14 @@
         </button>
       </div>
 
-      <div *ngIf="isAuthenticated && orders.length === 0" class="no-orders" @fadeIn>
+      <div *ngIf="isAuthenticated && orders.length === 0" class="no-orders" style="animation: fadeIn 0.6s ease-out;">
         <p>You haven't placed any orders yet.</p>
         <button class="btn btn-primary" (click)="goToProducts()">
           Start Shopping
         </button>
       </div>
 
-      <div *ngIf="isAuthenticated && orders.length > 0" class="orders-list" @fadeIn>
+      <div *ngIf="isAuthenticated && orders.length > 0" class="orders-list" style="animation: fadeIn 0.6s ease-out;">
         <div *ngFor="let order of orders" class="order-card">
           <div class="order-header">
             <div class="order-info">

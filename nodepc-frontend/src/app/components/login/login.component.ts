@@ -124,4 +124,8 @@ export class LoginComponent {
   socialLogin(provider: string): void {
     alert(`${provider} login will be implemented soon!`);
   }
+
+  goBack(): void {
+    window.history.back();
+  }
 }

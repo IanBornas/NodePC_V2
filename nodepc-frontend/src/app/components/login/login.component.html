@@ -1,5 +1,8 @@
 <div class="login-container">
   <div class="login-card">
+    <button class="back-btn" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
     <div class="logo-header">
       <img src="/angular-logo.svg" alt="Angular Logo" class="angular-logo">
       <h1 class="brand-title">NodePC</h1>
@@ -47,7 +50,7 @@
             (click)="togglePassword()"
             aria-label="Toggle password visibility"
           >
-            {{ showPassword ? '🙈' : '👁️' }}
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
         <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message" id="password-error">
@@ -190,7 +193,7 @@
               (click)="togglePassword()"
               aria-label="Toggle password visibility"
             >
-              {{ showPassword ? '🙈' : '👁️' }}
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
           </div>
           <div
@@ -221,7 +224,7 @@
               (click)="toggleConfirmPassword()"
               aria-label="Toggle confirm password visibility"
             >
-              {{ showConfirmPassword ? '🙈' : '👁️' }}
+              <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
           </div>
           <div

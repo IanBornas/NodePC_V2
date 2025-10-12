@@ -4,7 +4,7 @@
 .nav-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; gap:16px; padding:10px 16px; }
 
 .brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--fg); font-weight:700; }
-.brand-logo { width:36px; height:36px; color:var(--accent); }
+.brand-logo { font-size:36px; width:36px; height:36px; color:var(--accent); }
 .brand-text { font-size:1.05rem; }
 
 .primary { margin-left: 24px; flex:1 1 auto; }

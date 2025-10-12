@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { trigger, transition, style, animate, query } from '@angular/animations';
+import { IconRegistry } from './services/icon-registry';
 
 @Component({
   selector: 'app-root',
@@ -23,4 +24,6 @@ import { trigger, transition, style, animate, query } from '@angular/animations'
 })
 export class App {
   protected readonly title = signal('nodepc-frontend');
+
+  constructor(private iconRegistry: IconRegistry) {}
 }

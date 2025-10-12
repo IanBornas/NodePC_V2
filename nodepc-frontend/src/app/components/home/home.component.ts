@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
@@ -10,7 +11,7 @@ import { Product } from '../../models/product.model';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, NavbarComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

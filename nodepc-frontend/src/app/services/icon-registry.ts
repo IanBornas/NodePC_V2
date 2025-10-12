@@ -18,15 +18,15 @@ export class IconRegistry {
     // Register custom SVG icons
     this.matIconRegistry.addSvgIcon(
       'intel',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/intel.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/intel.svg')
     );
     this.matIconRegistry.addSvgIcon(
       'amd',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/amd.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/amd.svg')
     );
     this.matIconRegistry.addSvgIcon(
       'nvidia',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/nvidia.svg')
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/nvidia.svg')
     );
   }
 }

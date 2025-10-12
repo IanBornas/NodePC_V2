@@ -27,52 +27,59 @@ public class AuthController {
 
     // ✅ Register new user
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, String> registerData) {
         Map<String, Object> response = new HashMap<>();
         try {
-            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-                return bad(response, "Username already taken!");
+            String email = registerData.get("email");
+            String password = registerData.get("password");
+            String firstName = registerData.get("firstName");
+            String lastName = registerData.get("lastName");
+
+            if (email == null || password == null) {
+                return bad(response, "Email and password are required!");
             }
-            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+
+            String username = email; // Use email as username
+
+            if (userRepository.findByUsername(username).isPresent()) {
                 return bad(response, "Email already in use!");
             }
 
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            if (user.getRole() == null || user.getRole().isEmpty()) {
-                user.setRole("ROLE_USER");
-            }
+            User user = new User();
+            user.setUsername(username);
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setRole("ROLE_USER");
 
             userRepository.save(user);
             response.put("message", "✅ User registered successfully!");
             response.put("username", user.getUsername());
             response.put("email", user.getEmail());
+            response.put("firstName", firstName);
+            response.put("lastName", lastName);
+            response.put("role", user.getRole());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return internal(response, e);
         }
     }
 
-    // ✅ Login with username + email + password
+    // ✅ Login with email + password
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginData) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String username = loginData.get("username");
             String email = loginData.get("email");
             String password = loginData.get("password");
 
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
+                    new UsernamePasswordAuthenticationToken(email, password)
             );
 
-            User user = userRepository.findByUsername(username)
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found!"));
 
-            if (!user.getEmail().equals(email)) {
-                return unauthorized(response, "Email does not match for this username!");
-            }
-
-            String token = jwtUtil.generateToken(username);
+            String token = jwtUtil.generateToken(user.getUsername());
 
             response.put("message", "✅ Login successful!");
             response.put("token", token);
@@ -83,7 +90,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
-            return unauthorized(response, "Invalid username or password");
+            return unauthorized(response, "Invalid email or password");
         } catch (Exception e) {
             return internal(response, e);
         }

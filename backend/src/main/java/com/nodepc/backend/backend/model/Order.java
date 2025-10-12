@@ -20,6 +20,12 @@ public class Order {
     @Column(nullable = false)
     private int quantity;
 
+    @Column(nullable = false)
+    private double totalAmount;
+
+    @Column(nullable = false)
+    private String status;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
 
@@ -33,6 +39,10 @@ public class Order {
     public void setProduct(Product product) { this.product = product; }
     public int getQuantity() { return quantity; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
+    public double getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public Date getOrderDate() { return orderDate; }
     public void setOrderDate(Date orderDate) { this.orderDate = orderDate; }
 }

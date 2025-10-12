@@ -1,7 +1,7 @@
 package com.nodepc.backend.backend.controller;
 
 import com.nodepc.backend.backend.DTO.OrderResponse;
-import com.nodepc.backend.backend.model.Product;
+import com.nodepc.backend.backend.DTO.ProductResponse;
 import com.nodepc.backend.backend.model.User;
 import com.nodepc.backend.backend.service.OrderService;
 import com.nodepc.backend.backend.service.ProductService;
@@ -28,21 +28,21 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String,Object>> dashboard() {
         List<User> users = userService.getAllUsers();
-        List<Product> products = productService.getAllProducts();
+        List<ProductResponse> products = productService.getAllProducts();
         List<OrderResponse> orders = orderService.getAllOrders();
 
         Map<String,Object> stats = new HashMap<>();
         stats.put("totalUsers", users.size());
         stats.put("totalProducts", products.size());
         stats.put("totalOrders", orders.size());
-        double totalRevenue = orders.stream().mapToDouble(o -> o.getProductPrice() * o.getQuantity()).sum();
+        double totalRevenue = orders.stream().mapToDouble(OrderResponse::getTotalAmount).sum();
         stats.put("totalRevenue", totalRevenue);
         return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/products")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Product>> getProducts() { return ResponseEntity.ok(productService.getAllProducts()); }
+    public ResponseEntity<List<ProductResponse>> getProducts() { return ResponseEntity.ok(productService.getAllProducts()); }
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")

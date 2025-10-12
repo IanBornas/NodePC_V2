@@ -1,5 +1,6 @@
 package com.nodepc.backend.backend.controller;
 
+import com.nodepc.backend.backend.DTO.ProductResponse;
 import com.nodepc.backend.backend.model.Product;
 import com.nodepc.backend.backend.service.ProductService;
 import org.slf4j.Logger;
@@ -18,13 +19,13 @@ public class ProductController {
     public ProductController(ProductService productService) { this.productService = productService; }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAll() {
+    public ResponseEntity<List<ProductResponse>> getAll() {
         logger.info("[NodePC] Get all products");
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
         return productService.getProductById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -36,7 +37,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+        Product updated = productService.updateProduct(id, product);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,14 +26,34 @@ public class ProductService {
         return productRepository.count();
     }
 
+    public Optional<ProductResponse> getProductById(Long id) {
+        return productRepository.findById(id).map(this::convertToResponse);
+    }
+
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    public Product updateProduct(Long id, Product product) {
+        if (productRepository.existsById(id)) {
+            product.setId(id);
+            return productRepository.save(product);
+        }
+        return null;
+    }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+
     private ProductResponse convertToResponse(Product p) {
         return new ProductResponse(
                 p.getId(),
                 p.getName(),
                 p.getDescription(),
-                p.getPrice(),
+                p.getPrice().doubleValue(),
                 p.getStock(),
-                p.getCategory() != null ? p.getCategory().getName() : "Uncategorized"
+                p.getCategory() != null ? p.getCategory() : "Uncategorized"
         );
     }
 }

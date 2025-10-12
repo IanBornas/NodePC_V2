@@ -20,6 +20,8 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
+    private String category;
+
     public Product() {}
 
     public Product(String name, String description, BigDecimal price, int stock) {
@@ -39,4 +41,6 @@ public class Product {
     public void setPrice(BigDecimal price) { this.price = price; }
     public int getStock() { return stock; }
     public void setStock(int stock) { this.stock = stock; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }

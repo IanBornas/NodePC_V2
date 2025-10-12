@@ -29,4 +29,9 @@ export class NavbarComponent {
   onResize(): void {
     if (window.innerWidth > 920 && this.menuOpen) this.closeMenu();
   }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.menuOpen) this.closeMenu();
+  }
 }

@@ -35,14 +35,14 @@
 }
 
 .hero h1 {
-  font-size: 3.5rem;
+  font-size: 3rem;
   margin-bottom: 1.5rem;
   font-weight: 800;
   line-height: 1.1;
 }
 
 .hero p {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   margin-bottom: 2.5rem;
   opacity: 0.95;
   line-height: 1.6;
@@ -116,18 +116,23 @@
   gap: 2rem;
   max-width: 1000px;
   margin: 0 auto;
+  justify-items: center;
 }
 
 .category-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: white;
   padding: 3rem 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   text-decoration: none;
   color: inherit;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-align: center;
+  height: 220px;
 }
 
 .category-card:hover {
@@ -227,7 +232,8 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -379,14 +385,16 @@
 
 .btn {
   display: inline-block;
-  padding: 1rem 2.5rem;
+  padding: 1.25rem 3rem;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  min-height: 48px;
+  line-height: 1.2;
 }
 
 .btn-primary {
@@ -425,31 +433,59 @@
   }
 
   .hero h1 {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
   }
 
   .hero-ctas {
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .hero-ctas .btn {
+    width: 100%;
+    max-width: 280px;
   }
 
   .trust-bar {
     flex-direction: column;
     text-align: center;
-    gap: 1rem;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
   }
 
   .retailer-callout {
     flex-direction: column;
     text-align: center;
+    padding: 3rem 2rem;
   }
 
   .newsletter-form {
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
   }
 
   .newsletter-form input {
     width: 100%;
-    max-width: 300px;
+    max-width: 320px;
+  }
+
+  .category-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonial-grid {
+    grid-template-columns: 1fr;
   }
 }

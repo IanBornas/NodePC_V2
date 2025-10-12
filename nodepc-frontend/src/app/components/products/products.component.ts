@@ -1,5 +1,5 @@
 // src/app/components/products/products.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -288,6 +288,13 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   closeQuickView(): void {
     this.selectedProduct = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.selectedProduct) {
+      this.closeQuickView();
+    }
   }
 
   trackByProductId(index: number, product: Product): number {

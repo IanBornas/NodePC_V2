@@ -19,7 +19,7 @@
   <section class="trust-bar">
     <div class="trust-item">
       <mat-icon class="icon">local_shipping</mat-icon>
-      <span>Free shipping over ₱99</span>
+      <span>Free shipping over Php 99</span>
     </div>
     <div class="trust-item">
       <mat-icon class="icon">security</mat-icon>
@@ -30,9 +30,18 @@
       <span>24/7 expert chat</span>
     </div>
     <div class="trust-logos">
-      <mat-icon svgIcon="intel" class="logo-icon"></mat-icon>
-      <mat-icon svgIcon="amd" class="logo-icon"></mat-icon>
-      <mat-icon svgIcon="nvidia" class="logo-icon"></mat-icon>
+      <a href="https://www.intel.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="intel" class="logo-icon"></mat-icon>
+      </a>
+      <a href="https://www.amd.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="amd" class="logo-icon"></mat-icon>
+      </a>
+      <a href="https://www.nvidia.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="nvidia" class="logo-icon"></mat-icon>
+      </a>
+      <a href="https://www.corsair.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="corsair" class="logo-icon"></mat-icon>
+      </a>
     </div>
   </section>
 
@@ -101,6 +110,64 @@
           </button>
         </div>
       </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="placeholder-shimmer"></div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -128,17 +195,17 @@
       <div class="testimonial">
         <div class="rating">★★★★★</div>
         <p>"NodePC helped me build my first gaming PC. Their support was incredible!"</p>
-        <cite>- Alex M.</cite>
+        <cite>- Aljann Jakilan.</cite>
       </div>
       <div class="testimonial">
         <div class="rating">★★★★★</div>
         <p>"Fast shipping and quality components. Highly recommend for builders."</p>
-        <cite>- Sarah K.</cite>
+        <cite>- Christian Danielle Leano.</cite>
       </div>
       <div class="testimonial">
         <div class="rating">★★★★★</div>
         <p>"Great prices and expert advice. My go-to for PC parts."</p>
-        <cite>- Mike R.</cite>
+        <cite>- Zaki Nathaniel Tanig.</cite>
       </div>
     </div>
   </section>
@@ -146,12 +213,15 @@
   <!-- Newsletter Signup -->
   <section class="newsletter">
     <div class="newsletter-content">
-      <h2>Stay Updated</h2>
-      <p>Get the latest deals, new product releases, and building tips.</p>
-      <form class="newsletter-form">
-        <input type="email" placeholder="Enter your email" required>
-        <button type="submit" class="btn btn-primary">Subscribe</button>
+      <mat-icon class="newsletter-icon">mail</mat-icon>
+      <h2>Get News & Tips</h2>
+      <p>Get fun updates, new cool stuff, and easy building tips.</p>
+      <form class="newsletter-form" (ngSubmit)="onSubscribe($event)">
+        <label for="email-input" class="sr-only">Email Address</label>
+        <input id="email-input" type="email" placeholder="Type your email here" required>
+        <button type="submit" class="btn btn-primary subscribe-btn">Submit</button>
       </form>
+      <div *ngIf="subscriptionMessage" class="subscription-message">{{ subscriptionMessage }}</div>
     </div>
   </section>
 </main>

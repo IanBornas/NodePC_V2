@@ -17,6 +17,7 @@ import { Product } from '../../models/product.model';
 })
 export class HomeComponent implements OnInit {
   featuredProducts: Product[] = [];
+  subscriptionMessage: string = '';
 
   constructor(
     private productService: ProductService,
@@ -42,5 +43,19 @@ export class HomeComponent implements OnInit {
   addToCart(product: Product): void {
     this.cartService.addToCart(product, 1);
     alert(`${product.name} added to cart!`);
+  }
+
+  onSubscribe(event: Event): void {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
+    if (emailInput && emailInput.value) {
+      // Simulate subscription (in real app, call service)
+      this.subscriptionMessage = 'Thanks for joining! Check your email soon.';
+      emailInput.value = '';
+      setTimeout(() => {
+        this.subscriptionMessage = '';
+      }, 5000);
+    }
   }
 }

@@ -28,5 +28,9 @@ export class IconRegistry {
       'nvidia',
       this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/nvidia.svg')
     );
+    this.matIconRegistry.addSvgIcon(
+      'corsair',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/corsair.svg')
+    );
   }
 }

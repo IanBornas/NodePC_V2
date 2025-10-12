@@ -4,9 +4,8 @@ import com.nodepc.backend.backend.model.User;
 import com.nodepc.backend.backend.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
@@ -15,25 +14,18 @@ import java.util.List;
 
 @WebServlet("/admin-servlet/users")
 public class UserServlet extends HttpServlet {
-
-    private UserService userService;
+    @Autowired private UserService userService;
 
     @Override
-    public void init() throws ServletException {
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+    public void init() throws ServletException { SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext()); }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/plain");
         PrintWriter out = resp.getWriter();
+        out.println("NodePC Users");
+        out.println("------------");
         List<User> users = userService.getAllUsers();
-        for (User u : users) {
-            out.println("ID: " + u.getId() + " | Username: " + u.getUsername());
-        }
+        users.forEach(u -> out.printf("%d | %s | %s | %s%n", u.getId(), u.getUsername(), u.getEmail(), u.getRole()));
     }
 }

@@ -9,45 +9,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/backend/orders")
-@CrossOrigin(origins = "http://localhost:4200") // allow Angular frontend
+@RequestMapping("/api/orders")
+@CrossOrigin(origins = "http://localhost:4200")
 public class OrderController {
-
     private final OrderService orderService;
+    public OrderController(OrderService orderService) { this.orderService = orderService; }
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    // ✅ Create Order
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
-        try {
-            OrderResponse order = orderService.createOrder(orderRequest);
-            return ResponseEntity.ok(order);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<OrderResponse> create(@RequestBody OrderRequest req) {
+        return ResponseEntity.status(201).body(orderService.createOrder(req));
     }
 
-    // ✅ Get All Orders
     @GetMapping
-    public List<OrderResponse> getAllOrders() {
-        return orderService.getAllOrders();
-    }
+    public ResponseEntity<List<OrderResponse>> getAll() { return ResponseEntity.ok(orderService.getAllOrders()); }
 
-    // ✅ Get Order by ID
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
-        return orderService.getOrderById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<OrderResponse> getById(@PathVariable Long id) {
+        return orderService.getOrderById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ Delete Order
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.noContent().build();
-    }
+    public ResponseEntity<Void> delete(@PathVariable Long id) { orderService.deleteOrder(id); return ResponseEntity.noContent().build(); }
 }

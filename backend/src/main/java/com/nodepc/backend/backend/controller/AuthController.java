@@ -20,17 +20,10 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    @Autowired private UserRepository userRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private JwtUtil jwtUtil;
+    @Autowired private AuthenticationManager authenticationManager;
 
     // ✅ Register new user
     @PostMapping("/register")
@@ -38,12 +31,10 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         try {
             if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-                response.put("error", "Username already taken!");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                return bad(response, "Username already taken!");
             }
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                response.put("error", "Email already in use!");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                return bad(response, "Email already in use!");
             }
 
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -57,8 +48,7 @@ public class AuthController {
             response.put("email", user.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return internal(response, e);
         }
     }
 
@@ -71,21 +61,17 @@ public class AuthController {
             String email = loginData.get("email");
             String password = loginData.get("password");
 
-            // Authenticate by username (required by Spring Security)
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
-            // Extra check: email must also match
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found!"));
 
             if (!user.getEmail().equals(email)) {
-                response.put("error", "Email does not match for this username!");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                return unauthorized(response, "Email does not match for this username!");
             }
 
-            // ✅ Generate JWT
             String token = jwtUtil.generateToken(username);
 
             response.put("message", "✅ Login successful!");
@@ -97,40 +83,51 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
-            response.put("error", "Invalid username or password");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            return unauthorized(response, "Invalid username or password");
         } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return internal(response, e);
         }
     }
 
-    // ✅ Register admin user (protected - only for initial setup or super admin)
+    // ✅ Register admin
     @PostMapping("/register-admin")
     public ResponseEntity<Map<String, Object>> registerAdmin(@RequestBody User user) {
         Map<String, Object> response = new HashMap<>();
         try {
             if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-                response.put("error", "Username already taken!");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                return bad(response, "Username already taken!");
             }
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                response.put("error", "Email already in use!");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                return bad(response, "Email already in use!");
             }
 
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRole("ROLE_ADMIN"); // ✅ Set as admin
-
+            user.setRole("ROLE_ADMIN");
             userRepository.save(user);
+
             response.put("message", "✅ Admin registered successfully!");
             response.put("username", user.getUsername());
             response.put("email", user.getEmail());
             response.put("role", user.getRole());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return internal(response, e);
         }
+    }
+
+    // Helpers
+    private ResponseEntity<Map<String, Object>> bad(Map<String, Object> r, String m) {
+        r.put("error", m);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(r);
+    }
+
+    private ResponseEntity<Map<String, Object>> unauthorized(Map<String, Object> r, String m) {
+        r.put("error", m);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(r);
+    }
+
+    private ResponseEntity<Map<String, Object>> internal(Map<String, Object> r, Exception e) {
+        r.put("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(r);
     }
 }

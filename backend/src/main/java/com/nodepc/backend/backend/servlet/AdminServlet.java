@@ -1,6 +1,6 @@
 package com.nodepc.backend.backend.servlet;
 
-import com.nodepc.backend.backend.DTO.OrderResponse;
+import com.nodepc.backend.backend.service.ProductService;
 import com.nodepc.backend.backend.service.OrderService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,11 +10,11 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
-@WebServlet("/admin-servlet/orders")
-public class OrderServlet extends HttpServlet {
+@WebServlet("/admin-servlet/dashboard")
+public class AdminServlet extends HttpServlet {
 
+    @Autowired private ProductService productService;
     @Autowired private OrderService orderService;
 
     @Override
@@ -29,11 +29,9 @@ public class OrderServlet extends HttpServlet {
         resp.setContentType("text/plain");
         PrintWriter out = resp.getWriter();
 
-        List<OrderResponse> orders = orderService.getAllOrders();
-
-        out.println("==== NodePC Orders ====");
-        for (OrderResponse o : orders) {
-            out.println("ID: " + o.getId() + " | User: " + o.getUsername() + " | Total: ₱" + o.getTotalAmount());
-        }
+        out.println("===== NodePC Admin Dashboard =====");
+        out.println("Total Products: " + productService.countProducts());
+        out.println("Total Orders: " + orderService.countOrders());
+        out.println("System Status: ✅ Running fine on Tomcat");
     }
 }

@@ -31,4 +31,13 @@
         <servlet-name>OrderServlet</servlet-name>
         <url-pattern>/admin-servlet/orders</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>com.nodepc.backend.backend.servlet.AdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/admin-servlet/dashboard</url-pattern>
+    </servlet-mapping>
 </web-app>

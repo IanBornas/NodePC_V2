@@ -32,5 +32,13 @@ export class IconRegistry {
       'corsair',
       this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/corsair.svg')
     );
+    this.matIconRegistry.addSvgIcon(
+      'google',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/google.svg')
+    );
+    this.matIconRegistry.addSvgIcon(
+      'facebook',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/icons/facebook.svg')
+    );
   }
 }

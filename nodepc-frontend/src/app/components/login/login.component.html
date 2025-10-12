@@ -1,6 +1,9 @@
 <div class="login-container">
   <div class="login-card">
-    <button class="back-arrow" routerLink="/" aria-label="Go back to home">←</button>
+    <div class="logo-header">
+      <img src="/angular-logo.svg" alt="Angular Logo" class="angular-logo">
+      <h1 class="brand-title">NodePC</h1>
+    </div>
     <h2>Login to Your Account</h2>
     <p class="subtitle">Access exclusive deals and save your favorite products.</p>
 
@@ -97,9 +100,11 @@
     <!-- Social Login -->
     <div class="social-login">
       <button class="btn btn-social btn-google" (click)="socialLogin('google')">
+        <mat-icon svgIcon="google" class="social-icon"></mat-icon>
         Continue with Google
       </button>
       <button class="btn btn-social btn-facebook" (click)="socialLogin('facebook')">
+        <mat-icon svgIcon="facebook" class="social-icon"></mat-icon>
         Continue with Facebook
       </button>
     </div>

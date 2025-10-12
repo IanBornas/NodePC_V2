@@ -62,6 +62,12 @@ public class OrderService {
         return orderRepository.findById(id).map(this::convertToResponse);
     }
 
+    public List<OrderResponse> getOrdersByUserId(Long userId) {
+        return orderRepository.findByUserId(userId).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }

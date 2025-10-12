@@ -28,6 +28,11 @@ public class OrderController {
         return orderService.getOrderById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<OrderResponse>> getByCustomerId(@PathVariable Long customerId) {
+        return ResponseEntity.ok(orderService.getOrdersByUserId(customerId));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) { orderService.deleteOrder(id); return ResponseEntity.noContent().build(); }
 }

@@ -83,6 +83,7 @@ public class AuthController {
 
             response.put("message", "✅ Login successful!");
             response.put("token", token);
+            response.put("id", user.getId());
             response.put("username", user.getUsername());
             response.put("email", user.getEmail());
             response.put("role", user.getRole());

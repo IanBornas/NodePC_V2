@@ -30,6 +30,10 @@ public class ProductService {
         return productRepository.findById(id).map(this::convertToResponse);
     }
 
+    public Product getProductEntityById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
@@ -53,7 +57,8 @@ public class ProductService {
                 p.getDescription(),
                 p.getPrice().doubleValue(),
                 p.getStock(),
-                p.getCategory() != null ? p.getCategory() : "Uncategorized"
+                p.getCategory() != null ? p.getCategory() : "Uncategorized",
+                p.getImageUrl()
         );
     }
 }

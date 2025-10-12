@@ -22,6 +22,8 @@ public class Product {
 
     private String category;
 
+    private String imageUrl;
+
     public Product() {}
 
     public Product(String name, String description, BigDecimal price, int stock) {
@@ -43,4 +45,6 @@ public class Product {
     public void setStock(int stock) { this.stock = stock; }
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

@@ -1,0 +1,263 @@
+<app-navbar></app-navbar>
+<div class="products-container">
+  <!-- Breadcrumbs -->
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a routerLink="/">Home</a>
+    <span class="separator">></span>
+    <span>Products{{ selectedCategory ? ' > ' + selectedCategory : '' }}</span>
+  </nav>
+
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>Categories</h3>
+    <ul class="category-list">
+      <li>
+        <button
+          (click)="filterByCategory(null)"
+          [class.active]="selectedCategory === null">
+          All Products ({{ allProductsCount }})
+        </button>
+      </li>
+      <li *ngFor="let category of getVisibleCategories()">
+        <button
+          (click)="filterByCategory(category.name)"
+          [class.active]="selectedCategory === category.name">
+          {{ category.emoji }} {{ category.name }} ({{ category.count }})
+        </button>
+      </li>
+    </ul>
+
+    <!-- Filters -->
+    <div class="filters">
+      <h4>Filters</h4>
+      <div class="filter-group">
+        <label for="price-min">Price Range</label>
+        <div class="price-range">
+          <input
+            id="price-min"
+            type="number"
+            placeholder="Min"
+            [(ngModel)]="priceMin"
+            (input)="onPriceChange()">
+          <span>-</span>
+          <input
+            id="price-max"
+            type="number"
+            placeholder="Max"
+            [(ngModel)]="priceMax"
+            (input)="onPriceChange()">
+        </div>
+      </div>
+      <div class="filter-group">
+        <label for="sort">Sort By</label>
+        <select id="sort" [(ngModel)]="sortBy" (change)="onSortChange()">
+          <option value="relevance">Relevance</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Search and Filters Bar -->
+    <div class="search-filters-bar sticky-filters">
+      <div class="search-container">
+        <input
+          type="text"
+          placeholder="Search site-wide or try popular categories..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+          class="search-input"
+          aria-label="Search products">
+        <button class="search-btn" type="button" aria-label="Submit search">🔍</button>
+      </div>
+      <div class="active-filters" *ngIf="activeFilters.length > 0">
+        <span class="filters-label">Active filters:</span>
+        <span
+          *ngFor="let filter of activeFilters"
+          class="filter-chip"
+          (click)="removeFilter(filter)">
+          {{ filter.label }} ×
+        </span>
+        <button class="clear-filters" (click)="clearAllFilters()">Clear all</button>
+      </div>
+    </div>
+
+
+    <!-- Products Section -->
+    <section class="products-section">
+      <div class="section-header">
+        <h2>{{ getSectionTitle() }}</h2>
+        <div class="view-controls">
+          <button
+            class="view-toggle"
+            [class.active]="viewMode === 'grid'"
+            (click)="setViewMode('grid')">
+            Grid
+          </button>
+          <button
+            class="view-toggle"
+            [class.active]="viewMode === 'list'"
+            (click)="setViewMode('list')">
+            List
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading Skeleton -->
+      <div *ngIf="loading" class="products-grid">
+        <div *ngFor="let i of skeletonArray" class="product-card skeleton">
+          <div class="skeleton-image"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+        </div>
+      </div>
+      
+
+      <!-- Products Grid -->
+      <div *ngIf="!loading" class="products-grid" [class.list-view]="viewMode === 'list'">
+        <div
+          *ngFor="let product of filteredProducts; trackBy: trackByProductId"
+          class="product-card"
+          [class.list-view]="viewMode === 'list'">
+          <div class="badges">
+            <span *ngIf="product.badge" class="badge primary">{{product.badge}}</span>
+            <span *ngIf="isNewProduct(product)" class="badge secondary">New</span>
+            <span *ngIf="isBestSeller(product)" class="badge accent">Best Seller</span>
+          </div>
+
+          <div class="product-image" (click)="quickView(product)" loading="lazy">
+            <p>{{product.category}}</p>
+          </div>
+
+          <div class="product-info">
+            <h3>{{product.name}}</h3>
+            <div class="rating">
+              <span class="stars">{{ getStars(product) }}</span>
+              <span class="reviews">({{ getReviewCount(product) }} reviews)</span>
+            </div>
+            <p class="price">₱{{product.price}}</p>
+            <p class="shipping">{{ getShippingETA(product) }}</p>
+            <p class="stock" [class.low-stock]="product.stock < 10">
+              {{product.stock > 0 ? 'In Stock' : 'Out of Stock'}}
+            </p>
+
+            <div class="product-actions">
+              <button
+                class="btn btn-primary btn-sm"
+                (click)="addToCart(product)"
+                [disabled]="product.stock === 0">
+                {{ product.stock > 0 ? 'Add to Cart' : 'Preorder' }}
+              </button>
+              <button
+                class="btn btn-secondary btn-sm"
+                (click)="quickView(product)">
+                Quick View
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Empty State -->
+      <div *ngIf="!loading && filteredProducts.length === 0" class="empty-state" role="status" aria-live="polite" @fadeIn>
+        <div class="empty-state-content">
+          <div class="empty-illustration">
+            <svg viewBox="0 0 200 150" class="empty-svg">
+              <circle cx="100" cy="75" r="40" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+              <path d="M85 65 L100 80 L130 50" stroke="#6c757d" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="100" y="120" text-anchor="middle" fill="#6c757d" font-size="24">No products found</text>
+            </svg>
+          </div>
+
+          <h2>{{getEmptyStateTitle()}}</h2>
+          <p>{{getEmptyStateMessage()}}</p>
+
+
+        </div>
+
+        <!-- Popular Products Carousel -->
+        <div class="popular-products" *ngIf="popularProducts.length > 0">
+          <h3>Popular Products</h3>
+          <div class="popular-grid">
+            <div *ngFor="let product of popularProducts.slice(0, 6)" class="popular-card" (click)="quickView(product)">
+              <div class="popular-image">
+                <p>{{product.category}}</p>
+              </div>
+              <div class="popular-info">
+                <h4>{{product.name}}</h4>
+                <p class="price">₱{{product.price}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recently Restocked -->
+        <div class="recently-restocked" *ngIf="recentlyRestocked.length > 0">
+          <h3>Recently Restocked</h3>
+          <div class="restocked-grid">
+            <div *ngFor="let product of recentlyRestocked.slice(0, 4)" class="restocked-card">
+              <div class="restocked-image">
+                <p>{{product.category}}</p>
+              </div>
+              <div class="restocked-info">
+                <h4>{{product.name}}</h4>
+                <p class="price">₱{{product.price}}</p>
+                <button class="btn btn-sm btn-primary" (click)="addToCart(product)">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Suggestions -->
+        <div class="suggestions" *ngIf="searchQuery">
+          <p>Try searching for:</p>
+          <div class="suggestion-tags">
+            <span class="tag" (click)="searchFor('GPU')">GPU</span>
+            <span class="tag" (click)="searchFor('RAM')">RAM</span>
+            <span class="tag" (click)="searchFor('SSD')">SSD</span>
+            <span class="tag" (click)="searchFor('CPU')">CPU</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Quick View Modal -->
+<div *ngIf="selectedProduct" class="modal-overlay" (click)="closeQuickView()" role="dialog" aria-modal="true" aria-labelledby="modal-title" @fadeIn>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeQuickView()" aria-label="Close modal">×</button>
+    <div class="modal-body">
+      <div class="modal-image">
+        <p>{{ selectedProduct.category }}</p>
+      </div>
+      <div class="modal-details">
+        <h2 id="modal-title">{{ selectedProduct.name }}</h2>
+        <p class="modal-price">₱{{ selectedProduct.price }}</p>
+        <p class="modal-stock" [class.low-stock]="selectedProduct.stock < 10">
+          {{ selectedProduct.stock > 0 ? 'In Stock: ' + selectedProduct.stock : 'Out of Stock' }}
+        </p>
+        <p class="modal-description">High-quality {{ selectedProduct.category.toLowerCase() }} component perfect for your build.</p>
+        <div class="modal-actions">
+          <button
+            class="btn btn-primary"
+            (click)="addToCart(selectedProduct); closeQuickView()"
+            [disabled]="selectedProduct.stock === 0">
+            Add to Cart
+          </button>
+          <button class="btn btn-secondary" [routerLink]="['/products', selectedProduct.id]" (click)="closeQuickView()">
+            View Full Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,227 @@
+<app-navbar></app-navbar>
+<main class="home-main">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Build your dream PC with NodePC</h1>
+      <p>Premium components, expert support, and wholesale options for retailers.</p>
+      <div class="hero-ctas">
+        <a routerLink="/products" class="btn btn-primary">Shop Now</a>
+        <a routerLink="/about" class="btn btn-secondary">Wholesale & Retailers</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <!-- Placeholder for hero image -->
+    </div>
+  </section>
+
+  <!-- Trust Bar -->
+  <section class="trust-bar">
+    <div class="trust-item">
+      <mat-icon class="icon">local_shipping</mat-icon>
+      <span>Free shipping over Php 99</span>
+    </div>
+    <div class="trust-item">
+      <mat-icon class="icon">security</mat-icon>
+      <span>2-year limited warranty</span>
+    </div>
+    <div class="trust-item">
+      <mat-icon class="icon">chat</mat-icon>
+      <span>24/7 expert chat</span>
+    </div>
+    <div class="trust-logos">
+      <a href="https://www.intel.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="intel" class="logo-icon"></mat-icon>
+      </a>
+      <a href="https://www.amd.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="amd" class="logo-icon"></mat-icon>
+      </a>
+      <a href="https://www.nvidia.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="nvidia" class="logo-icon"></mat-icon>
+      </a>
+      <a href="https://www.corsair.com/" target="_blank" rel="noopener noreferrer">
+        <mat-icon svgIcon="corsair" class="logo-icon"></mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <!-- Featured Categories -->
+  <section class="categories">
+    <h2>Shop by Category</h2>
+    <div class="category-grid">
+      <a routerLink="/products" class="category-card">
+        <mat-icon class="category-icon">graphic_eq</mat-icon>
+        <h3>GPUs</h3>
+        <p>High-performance graphics cards</p>
+      </a>
+      <a routerLink="/products" class="category-card">
+        <mat-icon class="category-icon">memory</mat-icon>
+        <h3>CPUs</h3>
+        <p>Powerful processors for any build</p>
+      </a>
+      <a routerLink="/products" class="category-card">
+        <mat-icon class="category-icon">storage</mat-icon>
+        <h3>Storage</h3>
+        <p>Fast SSDs and HDDs for data storage</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <mat-icon class="step-icon">search</mat-icon>
+        <h3>Browse</h3>
+        <p>Explore our curated selection of premium PC components</p>
+      </div>
+      <div class="step">
+        <mat-icon class="step-icon">settings</mat-icon>
+        <h3>Configure</h3>
+        <p>Use our tools to ensure compatibility and optimize performance</p>
+      </div>
+      <div class="step">
+        <mat-icon class="step-icon">shopping_cart</mat-icon>
+        <h3>Checkout & Support</h3>
+        <p>Secure checkout with ongoing expert support</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="featured-products">
+    <div class="section-header">
+      <h2>Featured Products</h2>
+      <a routerLink="/products" class="view-all">View All</a>
+    </div>
+    <div class="products-grid">
+      <div *ngFor="let product of featuredProducts" class="product-card">
+        <div class="product-image">
+          <p>{{ product.category }}</p>
+        </div>
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <p class="price">₱{{ product.price }}</p>
+          <button
+            class="btn btn-primary btn-sm"
+            (click)="addToCart(product)">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="placeholder-shimmer"></div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+      <div *ngIf="featuredProducts.length === 0" class="product-card placeholder-card">
+        <div class="product-image placeholder">
+          <div class="placeholder-shimmer"></div>
+        </div>
+        <div class="product-info">
+          <div class="placeholder-text placeholder-title"></div>
+          <div class="placeholder-text placeholder-price"></div>
+          <div class="placeholder-button"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Retailer Callout -->
+  <section class="retailer-callout">
+    <div class="callout-content">
+      <h2>Become a NodePC Retailer</h2>
+      <p>Join our wholesale network for volume pricing, fast fulfillment, and API access to inventory.</p>
+      <ul>
+        <li>Competitive wholesale pricing</li>
+        <li>Bulk order discounts</li>
+        <li>Dedicated account management</li>
+      </ul>
+      <a routerLink="/about" class="btn btn-primary">Apply for Wholesale</a>
+    </div>
+    <div class="callout-image">
+      <!-- Placeholder -->
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <h2>What Our Customers Say</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial">
+        <div class="rating">★★★★★</div>
+        <p>"NodePC helped me build my first gaming PC. Their support was incredible!"</p>
+        <cite>- Aljann Jakilan.</cite>
+      </div>
+      <div class="testimonial">
+        <div class="rating">★★★★★</div>
+        <p>"Fast shipping and quality components. Highly recommend for builders."</p>
+        <cite>- Christian Danielle Leano.</cite>
+      </div>
+      <div class="testimonial">
+        <div class="rating">★★★★★</div>
+        <p>"Great prices and expert advice. My go-to for PC parts."</p>
+        <cite>- Zaki Nathaniel Tanig.</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Signup -->
+  <section class="newsletter">
+    <div class="newsletter-content">
+      <mat-icon class="newsletter-icon">mail</mat-icon>
+      <h2>Get News & Tips</h2>
+      <p>Get fun updates, new cool stuff, and easy building tips.</p>
+      <form class="newsletter-form" (ngSubmit)="onSubscribe($event)">
+        <label for="email-input" class="sr-only">Email Address</label>
+        <input id="email-input" type="email" placeholder="Type your email here" required>
+        <button type="submit" class="btn btn-primary subscribe-btn">Submit</button>
+      </form>
+      <div *ngIf="subscriptionMessage" class="subscription-message">{{ subscriptionMessage }}</div>
+    </div>
+  </section>
+</main>

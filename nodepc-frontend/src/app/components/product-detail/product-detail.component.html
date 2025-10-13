@@ -1,0 +1,107 @@
+    <div class="product-detail-container">
+      <button class="back-btn" routerLink="/products">
+        ← Back to Products
+      </button>
+
+      <div *ngIf="product" class="product-detail">
+        <div class="product-image-section">
+          <div class="main-image">
+            <p>{{product.category}}</p>
+          </div>
+          <div class="thumbnail-images">
+            <div class="thumbnail active">
+              <p>View 1</p>
+            </div>
+            <div class="thumbnail">
+              <p>View 2</p>
+            </div>
+            <div class="thumbnail">
+              <p>View 3</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-info-section">
+          <div class="product-header">
+            <span *ngIf="product.badge" class="badge">{{product.badge}}</span>
+            <h1>{{product.name}}</h1>
+            <p class="category">{{product.category}}</p>
+          </div>
+
+          <div class="price-section">
+            <p class="price">₱{{product.price}}</p>
+            <p class="stock" [class.low-stock]="product.stock < 10" [class.out-of-stock]="product.stock === 0">
+              {{product.stock > 0 ? 'In Stock: ' + product.stock : 'Out of Stock'}}
+            </p>
+          </div>
+
+          <div class="description">
+            <h3>Description</h3>
+            <p>{{product.description}}</p>
+          </div>
+
+          <div class="specifications">
+            <h3>Specifications</h3>
+            <div class="spec-grid">
+              <div class="spec-item">
+                <span class="spec-label">Category:</span>
+                <span class="spec-value">{{product.category}}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Availability:</span>
+                <span class="spec-value">{{product.stock > 0 ? 'In Stock' : 'Out of Stock'}}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">SKU:</span>
+                <span class="spec-value">PC-{{product.id}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="purchase-section">
+            <div class="quantity-selector">
+              <label for="quantity">Quantity:</label>
+              <div class="quantity-controls">
+                <button (click)="decreaseQuantity()" class="qty-btn">-</button>
+                <input
+                  id="quantity"
+                  type="number"
+                  [(ngModel)]="quantity"
+                  min="1"
+                  [max]="product.stock">
+                <button
+                  (click)="increaseQuantity()"
+                  [disabled]="quantity >= product.stock"
+                  class="qty-btn">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button
+                class="btn btn-primary btn-large"
+                (click)="addToCart()"
+                [disabled]="product.stock === 0">
+                Add to Cart
+              </button>
+              <button class="btn btn-secondary btn-large">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!product && !loading" class="not-found">
+        <h2>Product Not Found</h2>
+        <p>The product you're looking for doesn't exist.</p>
+        <button class="btn btn-primary" routerLink="/products">
+          Browse Products
+        </button>
+      </div>
+
+      <div *ngIf="loading" class="loading">
+        <p>Loading product...</p>
+      </div>
+    </div>

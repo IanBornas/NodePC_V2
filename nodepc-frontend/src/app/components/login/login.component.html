@@ -1,0 +1,287 @@
+<div class="login-container">
+  <div class="login-card">
+    <button class="back-btn" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon> Back
+    </button>
+    <div class="logo-header">
+      <img src="/angular-logo.svg" alt="Angular Logo" class="angular-logo">
+      <h1 class="brand-title">NodePC</h1>
+    </div>
+    <h2>Login to Your Account</h2>
+    <p class="subtitle">Access exclusive deals and save your favorite products.</p>
+
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="credentials.email"
+          placeholder="Enter your email"
+          required
+          email
+          #emailInput="ngModel"
+        />
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="error-message">
+          Please enter a valid email
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="credentials.password"
+            placeholder="Enter your password"
+            required
+            minlength="6"
+            #passwordInput="ngModel"
+            aria-describedby="password-error"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()"
+            aria-label="Toggle password visibility"
+          >
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error-message" id="password-error">
+          Password must be at least 6 characters
+        </div>
+      </div>
+
+      <!-- Remember Me -->
+      <div class="form-group checkbox-group">
+        <label for="rememberMe" class="inline-label">
+        <input
+        type="checkbox"
+        id="rememberMe"
+        name="rememberMe"
+        [(ngModel)]="rememberMe"
+        aria-describedby="rememberMe-help"
+        />
+        <span>Remember me</span>
+    </label>
+    <div id="rememberMe-help" class="sr-only">
+        Keep you logged in for 30 days
+    </div>
+    </div>
+
+
+
+
+
+      <!-- Alerts -->
+      <div *ngIf="errorMessage" class="error-alert">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="success-alert">{{ successMessage }}</div>
+
+      <!-- Actions -->
+      <button type="button" class="btn btn-secondary btn-block" (click)="forgotPassword()">
+        Forgot Password?
+      </button>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-block"
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider"><span>or</span></div>
+
+    <!-- Social Login -->
+    <div class="social-login">
+      <button class="btn btn-social btn-google" (click)="socialLogin('google')">
+        <mat-icon svgIcon="google" class="social-icon"></mat-icon>
+        Continue with Google
+      </button>
+      <button class="btn btn-social btn-facebook" (click)="socialLogin('facebook')">
+        <mat-icon svgIcon="facebook" class="social-icon"></mat-icon>
+        Continue with Facebook
+      </button>
+    </div>
+
+    <div class="divider"><span>or</span></div>
+
+    <!-- Register CTA -->
+    <div class="register-section">
+      <p>Don't have an account?</p>
+      <button class="btn btn-outline btn-block" (click)="showRegister = true">
+        Create Account
+      </button>
+    </div>
+  </div>
+
+  <!-- Registration Modal -->
+  <div *ngIf="showRegister" class="modal-overlay" (click)="showRegister = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="showRegister = false">✕</button>
+
+      <h2>Create Account</h2>
+      <p class="subtitle">Join NodePC today!</p>
+
+      <form (ngSubmit)="register()" #registerForm="ngForm">
+        <!-- Name -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              [(ngModel)]="registerData.firstName"
+              placeholder="First name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              [(ngModel)]="registerData.lastName"
+              placeholder="Last name"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="regEmail">Email</label>
+          <input
+            type="email"
+            id="regEmail"
+            name="regEmail"
+            [(ngModel)]="registerData.email"
+            placeholder="Enter your email"
+            required
+            email
+          />
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <div class="password-container">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="regPassword"
+              name="regPassword"
+              [(ngModel)]="registerData.password"
+              placeholder="Create a password"
+              required
+              minlength="6"
+              aria-describedby="reg-password-error"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePassword()"
+              aria-label="Toggle password visibility"
+            >
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <div
+            *ngIf="registerForm.submitted && registerForm.controls['regPassword']?.invalid"
+            class="error-message"
+            id="reg-password-error"
+          >
+            Password must be at least 6 characters
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-container">
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              id="confirmPassword"
+              name="confirmPassword"
+              [(ngModel)]="registerData.confirmPassword"
+              placeholder="Confirm your password"
+              required
+              aria-describedby="confirm-password-error"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleConfirmPassword()"
+              aria-label="Toggle confirm password visibility"
+            >
+              <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <div
+            *ngIf="registerForm.submitted && registerData.password !== registerData.confirmPassword"
+            class="error-message"
+            id="confirm-password-error"
+          >
+            Passwords do not match
+          </div>
+        </div>
+
+        <!-- Error Alert -->
+        <div *ngIf="registerError" class="error-alert">{{ registerError }}</div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="btn btn-primary btn-block"
+          [disabled]="registerForm.invalid || isLoading"
+        >
+          {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div *ngIf="showForgotPassword" class="modal-overlay" (click)="closeForgotPassword()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeForgotPassword()">✕</button>
+
+      <h2>Reset Password</h2>
+      <p class="subtitle">Enter your email to receive a reset link.</p>
+
+      <form (ngSubmit)="resetPassword(forgotEmail.value)" #forgotForm="ngForm">
+        <div class="form-group">
+          <label for="forgotEmail">Email</label>
+          <input
+            type="email"
+            id="forgotEmail"
+            name="forgotEmail"
+            #forgotEmail
+            placeholder="Enter your email"
+            required
+            email
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-block"
+          [disabled]="forgotForm.invalid"
+        >
+          Send Reset Link
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+

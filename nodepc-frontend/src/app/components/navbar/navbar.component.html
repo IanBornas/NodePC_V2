@@ -1,0 +1,49 @@
+<header class="nav-root" role="banner">
+  <div class="nav-inner">
+    <a class="brand" routerLink="/" aria-label="NodePC home">
+      <mat-icon class="brand-logo" aria-hidden="true">computer</mat-icon>
+      <span class="brand-text">NodePC</span>
+    </a>
+
+    <nav class="primary" role="navigation" aria-label="Primary">
+      <ul class="links" [class.open]="menuOpen" id="primary-navigation">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a></li>
+        <li><a routerLink="/products" routerLinkActive="active">Products</a></li>
+        <li><a routerLink="/about" routerLinkActive="active">About</a></li>
+        <li><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+      </ul>
+    </nav>
+
+    <div class="controls">
+      <label class="search" for="nav-search">
+        <input id="nav-search" type="search" placeholder="Search parts, e.g. RTX 4070" aria-label="Search products">
+        <button class="search-btn" aria-label="Submit search" type="button">
+          <mat-icon aria-hidden="true">search</mat-icon>
+        </button>
+      </label>
+
+      <a class="icon-btn cart" routerLink="/cart" aria-label="Open cart">
+        <mat-icon aria-hidden="true">shopping_cart</mat-icon>
+        <span class="badge" *ngIf="cartCount > 0" aria-live="polite">{{ cartCount }}</span>
+      </a>
+
+      <a class="icon-btn login" routerLink="/login" aria-label="Sign in">
+        <mat-icon aria-hidden="true">account_circle</mat-icon>
+      </a>
+
+      <button
+        class="hamburger"
+        aria-label="Toggle menu"
+        aria-controls="primary-navigation"
+        [attr.aria-expanded]="menuOpen"
+        (click)="toggleMenu()"
+      >
+        <span class="hamburger-box" aria-hidden="true">
+          <span class="hamburger-inner"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-backdrop" *ngIf="menuOpen" (click)="closeMenu()" aria-hidden="true"></div>
+</header>

@@ -2,7 +2,7 @@ package com.nodepc.backend.backend.config;
 
 import com.nodepc.backend.backend.security.jwt.JwtAuthenticationFilter;
 import com.nodepc.backend.backend.security.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -27,9 +27,28 @@
         <span class="badge" *ngIf="cartCount > 0" aria-live="polite">{{ cartCount }}</span>
       </a>
 
-      <a class="icon-btn login" routerLink="/login" aria-label="Sign in">
-        <mat-icon aria-hidden="true">account_circle</mat-icon>
-      </a>
+      <!-- User menu when logged in -->
+      <div class="user-menu" *ngIf="currentUser; else loginBtn">
+        <button class="user-btn" (click)="toggleMenu()" [class.active]="menuOpen">
+          <mat-icon aria-hidden="true">account_circle</mat-icon>
+          <span class="user-name">{{ getUserDisplayName() }}</span>
+          <mat-icon class="dropdown-icon" aria-hidden="true">expand_more</mat-icon>
+        </button>
+
+        <div class="user-dropdown" *ngIf="menuOpen">
+          <a routerLink="/profile" (click)="closeMenu()">My Profile</a>
+          <a routerLink="/orders" (click)="closeMenu()">My Orders</a>
+          <hr>
+          <button class="logout-btn" (click)="logout()">Logout</button>
+        </div>
+      </div>
+
+      <!-- Login button when not logged in -->
+      <ng-template #loginBtn>
+        <a class="icon-btn login" routerLink="/login" aria-label="Sign in">
+          <mat-icon aria-hidden="true">account_circle</mat-icon>
+        </a>
+      </ng-template>
 
       <button
         class="hamburger"

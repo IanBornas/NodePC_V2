@@ -1,0 +1,69 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>My Profile</h1>
+    <button class="edit-btn" (click)="toggleEdit()" *ngIf="!isEditing">
+      <mat-icon>edit</mat-icon>
+      Edit Profile
+    </button>
+  </div>
+
+  <div class="profile-content" *ngIf="currentUser">
+    <div class="profile-card">
+      <div class="profile-avatar">
+        <mat-icon class="avatar-icon">account_circle</mat-icon>
+      </div>
+
+      <div class="profile-info">
+        <div class="info-section">
+          <h2>{{ getFullName() || currentUser.username }}</h2>
+          <p class="status-badge" [class.admin]="currentUser.role === 'ADMIN'">
+            {{ getUserStatus() }}
+          </p>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <label>First Name:</label>
+            <span *ngIf="!isEditing">{{ currentUser.firstName || 'Not set' }}</span>
+            <input *ngIf="isEditing" type="text" [(ngModel)]="profileData.firstName" placeholder="First Name">
+          </div>
+
+          <div class="info-item">
+            <label>Last Name:</label>
+            <span *ngIf="!isEditing">{{ currentUser.lastName || 'Not set' }}</span>
+            <input *ngIf="isEditing" type="text" [(ngModel)]="profileData.lastName" placeholder="Last Name">
+          </div>
+
+          <div class="info-item">
+            <label>Username:</label>
+            <span *ngIf="!isEditing">{{ currentUser.username }}</span>
+            <input *ngIf="isEditing" type="text" [(ngModel)]="profileData.username" placeholder="Username">
+          </div>
+
+          <div class="info-item">
+            <label>Email:</label>
+            <span *ngIf="!isEditing">{{ currentUser.email }}</span>
+            <input *ngIf="isEditing" type="email" [(ngModel)]="profileData.email" placeholder="Email">
+          </div>
+        </div>
+
+        <div class="action-buttons" *ngIf="isEditing">
+          <button class="save-btn" (click)="saveProfile()">
+            <mat-icon>save</mat-icon>
+            Save Changes
+          </button>
+          <button class="cancel-btn" (click)="toggleEdit()">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-user" *ngIf="!currentUser">
+    <mat-icon>account_circle</mat-icon>
+    <h2>Please log in to view your profile</h2>
+    <a routerLink="/login" class="login-link">Go to Login</a>
+  </div>
+</div>

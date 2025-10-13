@@ -70,6 +70,12 @@ export class LoginComponent {
       return;
     }
 
+    // Validate email domain
+    if (!this.isValidEmailDomain(this.registerData.email)) {
+      this.registerError = 'Email must be from gmail.com, yahoo.com, outlook.com, or hotmail.com!';
+      return;
+    }
+
     this.isLoading = true;
     this.registerError = '';
     this.successMessage = '';
@@ -127,5 +133,14 @@ export class LoginComponent {
 
   goBack(): void {
     window.history.back();
+  }
+
+  private isValidEmailDomain(email: string): boolean {
+    if (!email) return false;
+    const lowerEmail = email.toLowerCase();
+    return lowerEmail.endsWith('@gmail.com') ||
+           lowerEmail.endsWith('@yahoo.com') ||
+           lowerEmail.endsWith('@outlook.com') ||
+           lowerEmail.endsWith('@hotmail.com');
   }
 }

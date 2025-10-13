@@ -56,12 +56,11 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Temporarily commented out for testing
-    // if (!this.authService.isAdmin()) {
-    //   alert('Access denied. Admin only.');
-    //   this.router.navigate(['/']);
-    //   return;
-    // }
+    if (!this.authService.isAdmin()) {
+      alert('Access denied. Admin only.');
+      this.router.navigate(['/']);
+      return;
+    }
 
     this.loadProducts();
     this.loadOrders();

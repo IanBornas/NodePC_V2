@@ -27,12 +27,52 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> create(@RequestBody User user) {
+        // Input validation
+        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Sanitize input
+        user.setUsername(user.getUsername().trim());
+        user.setEmail(user.getEmail().trim());
+        user.setPassword(user.getPassword().trim());
+        if (user.getFirstName() != null) {
+            user.setFirstName(user.getFirstName().trim());
+        }
+        if (user.getLastName() != null) {
+            user.setLastName(user.getLastName().trim());
+        }
+
         logger.info("[NodePC] Creating user: {}", user.getUsername());
         return ResponseEntity.status(201).body(userService.createUser(user));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
+        // Input validation
+        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Sanitize input
+        user.setUsername(user.getUsername().trim());
+        user.setEmail(user.getEmail().trim());
+        if (user.getFirstName() != null) {
+            user.setFirstName(user.getFirstName().trim());
+        }
+        if (user.getLastName() != null) {
+            user.setLastName(user.getLastName().trim());
+        }
+
         return ResponseEntity.ok(userService.updateUser(id, user));
     }
 

@@ -170,7 +170,11 @@
             placeholder="Enter your email"
             required
             email
+            #regEmailInput="ngModel"
           />
+          <div *ngIf="regEmailInput.invalid && regEmailInput.touched" class="error-message">
+            Please enter a valid email
+          </div>
         </div>
 
         <!-- Password -->

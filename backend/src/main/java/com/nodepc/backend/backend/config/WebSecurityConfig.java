@@ -68,7 +68,7 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/admin-servlet/**", "/servlet/**", "/backend/hello").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/products/**", "/admin-servlet/**", "/servlet/**", "/backend/hello").permitAll()
                         .anyRequest().authenticated()
                 );
 

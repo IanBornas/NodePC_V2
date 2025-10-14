@@ -106,8 +106,14 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
 
   loadProducts(): void {
+    console.log('🔍 DEBUG: Starting to load products...');
+    console.log('🔍 DEBUG: API URL:', this.productService);
+    
     this.productService.getAllProducts().subscribe({
       next: (products) => {
+        console.log('✅ DEBUG: Products loaded successfully:', products);
+        console.log('✅ DEBUG: Number of products:', products.length);
+        
         this.products = products;
         this.allProductsCount = products.length;
         // Get popular products (mock: highest priced items)
@@ -115,16 +121,24 @@ export class ProductsComponent implements OnInit, OnDestroy {
           .sort((a, b) => b.price - a.price)
           .slice(0, 6);
         this.loading = false;
+        console.log('✅ DEBUG: Loading set to false, applying filters...');
         this.applyFilters();
       },
       error: (error) => {
-        console.error('Error loading products:', error);
+        console.error('❌ DEBUG: Error loading products:', error);
+        console.error('❌ DEBUG: Error details:', {
+          message: error.message,
+          status: error.status,
+          statusText: error.statusText,
+          url: error.url
+        });
         this.loading = false;
       }
     });
   }
 
   filterByCategory(category: string | null): void {
+    console.log('🔍 DEBUG: filterByCategory called with:', category);
     this.selectedCategory = category;
     this.updateUrl();
     this.applyFilters();
@@ -145,13 +159,22 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   applyFilters(): void {
-    if (this.loading) return;
+    console.log('🔍 DEBUG: applyFilters called');
+    console.log('🔍 DEBUG: loading state:', this.loading);
+    console.log('🔍 DEBUG: products array length:', this.products.length);
+    
+    if (this.loading) {
+      console.log('⚠️ DEBUG: Skipping filters - still loading');
+      return;
+    }
 
     let filtered = [...this.products];
+    console.log('🔍 DEBUG: Starting with products:', filtered.length);
 
     // Category filter
     if (this.selectedCategory) {
       filtered = filtered.filter(p => p.category === this.selectedCategory);
+      console.log('🔍 DEBUG: After category filter:', filtered.length);
     }
 
     // Search filter
@@ -161,14 +184,17 @@ export class ProductsComponent implements OnInit, OnDestroy {
         p.name.toLowerCase().includes(query) ||
         p.category.toLowerCase().includes(query)
       );
+      console.log('🔍 DEBUG: After search filter:', filtered.length);
     }
 
     // Price filter
     if (this.priceMin !== null) {
       filtered = filtered.filter(p => p.price >= this.priceMin!);
+      console.log('🔍 DEBUG: After min price filter:', filtered.length);
     }
     if (this.priceMax !== null) {
       filtered = filtered.filter(p => p.price <= this.priceMax!);
+      console.log('🔍 DEBUG: After max price filter:', filtered.length);
     }
 
     // Sort
@@ -189,6 +215,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     }
 
     this.filteredProducts = filtered;
+    console.log('✅ DEBUG: Final filtered products:', this.filteredProducts.length);
     this.updateActiveFilters();
   }
 

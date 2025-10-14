@@ -1,0 +1,28 @@
+# Target directories and build artifacts
+target/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Git files
+.git/
+.gitignore
+
+# Documentation files
+README.md
+docs/
+
+# Test files and coverage reports
+src/test/
+target/surefire-reports/
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

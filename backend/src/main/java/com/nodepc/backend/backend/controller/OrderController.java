@@ -17,6 +17,17 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> create(@RequestBody OrderRequest req) {
+        // Input validation
+        if (req.getUserId() == null || req.getUserId() <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (req.getProductId() == null || req.getProductId() <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (req.getQuantity() <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.status(201).body(orderService.createOrder(req));
     }
 

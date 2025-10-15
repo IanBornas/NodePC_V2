@@ -103,11 +103,11 @@
     <!-- Social Login -->
     <div class="social-login">
       <button class="btn btn-social btn-google" (click)="socialLogin('google')">
-        <mat-icon svgIcon="google" class="social-icon"></mat-icon>
+        <img src="/assets/icons/google.svg" alt="Google" class="social-icon">
         Continue with Google
       </button>
       <button class="btn btn-social btn-facebook" (click)="socialLogin('facebook')">
-        <mat-icon svgIcon="facebook" class="social-icon"></mat-icon>
+        <img src="/assets/icons/facebook.svg" alt="Facebook" class="social-icon">
         Continue with Facebook
       </button>
     </div>
@@ -170,7 +170,11 @@
             placeholder="Enter your email"
             required
             email
+            #regEmailInput="ngModel"
           />
+          <div *ngIf="regEmailInput.invalid && regEmailInput.touched" class="error-message">
+            Please enter a valid email
+          </div>
         </div>
 
         <!-- Password -->

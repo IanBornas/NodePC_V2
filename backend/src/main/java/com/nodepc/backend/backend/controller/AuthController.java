@@ -39,6 +39,11 @@ public class AuthController {
                 return bad(response, "Email and password are required!");
             }
 
+            // Validate email domain
+            if (!isValidEmailDomain(email)) {
+                return bad(response, "Email must be from gmail.com, yahoo.com, outlook.com, or hotmail.com!");
+            }
+
             String username = email; // Use email as username
 
             if (userRepository.findByUsername(username).isPresent()) {
@@ -48,6 +53,8 @@ public class AuthController {
             User user = new User();
             user.setUsername(username);
             user.setEmail(email);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
             user.setPassword(passwordEncoder.encode(password));
             user.setRole("ROLE_USER");
 
@@ -102,6 +109,11 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> registerAdmin(@RequestBody User user) {
         Map<String, Object> response = new HashMap<>();
         try {
+            // Validate email domain for admin registration too
+            if (!isValidEmailDomain(user.getEmail())) {
+                return bad(response, "Email must be from gmail.com, yahoo.com, outlook.com, or hotmail.com!");
+            }
+
             if (userRepository.findByUsername(user.getUsername()).isPresent()) {
                 return bad(response, "Username already taken!");
             }
@@ -124,6 +136,15 @@ public class AuthController {
     }
 
     // Helpers
+    private boolean isValidEmailDomain(String email) {
+        if (email == null) return false;
+        String lowerEmail = email.toLowerCase();
+        return lowerEmail.endsWith("@gmail.com") ||
+               lowerEmail.endsWith("@yahoo.com") ||
+               lowerEmail.endsWith("@outlook.com") ||
+               lowerEmail.endsWith("@hotmail.com");
+    }
+
     private ResponseEntity<Map<String, Object>> bad(Map<String, Object> r, String m) {
         r.put("error", m);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(r);

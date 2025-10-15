@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: nodepc_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: nodepcdb
+      MYSQL_USER: nodepc_user
+      MYSQL_PASSWORD: nodepc_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - nodepc_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nodepc_backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/nodepcdb
+      SPRING_DATASOURCE_USERNAME: nodepc_user
+      SPRING_DATASOURCE_PASSWORD: nodepc_pass
+      JWT_SECRET: YourVeryLongAndSecureSecretKeyForJWTTokenGenerationMinimum256Bits123456789
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/nodepc-backend-0.0.1-SNAPSHOT/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - nodepc_network
+
+  frontend:
+    build:
+      context: ./nodepc-frontend
+      dockerfile: Dockerfile
+    container_name: nodepc_frontend
+    environment:
+      API_URL: http://backend:8080/nodepc-backend-0.0.1-SNAPSHOT/api
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - nodepc_network
+
+volumes:
+  mysql_data:
+
+networks:
+  nodepc_network:
+    driver: bridge

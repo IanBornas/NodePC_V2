@@ -75,17 +75,60 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, String>> uploadProductImage(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
+            // Validate file
+            if (file.isEmpty()) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "File is empty");
+                return ResponseEntity.badRequest().body(error);
+            }
+
+            // Validate file size (max 5MB)
+            long maxFileSize = 5 * 1024 * 1024; // 5MB
+            if (file.getSize() > maxFileSize) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "File size exceeds maximum allowed size of 5MB");
+                return ResponseEntity.badRequest().body(error);
+            }
+
+            // Validate file type
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Only image files are allowed");
+                return ResponseEntity.badRequest().body(error);
+            }
+
+            // Validate file extension
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Invalid filename");
+                return ResponseEntity.badRequest().body(error);
+            }
+
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+            if (!fileExtension.matches("\\.(jpg|jpeg|png|gif|webp)$")) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Invalid file extension. Allowed: jpg, jpeg, png, gif, webp");
+                return ResponseEntity.badRequest().body(error);
+            }
+
             // Create uploads directory if it doesn't exist
             Path uploadPath = Paths.get("uploads/products");
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Generate unique filename
-            String originalFilename = file.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            // Generate secure filename (prevent path traversal)
             String filename = "product_" + id + "_" + System.currentTimeMillis() + fileExtension;
             Path filePath = uploadPath.resolve(filename);
+
+            // Ensure the resolved path is within the intended directory
+            if (!filePath.normalize().startsWith(uploadPath.normalize())) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Invalid file path");
+                return ResponseEntity.badRequest().body(error);
+            }
 
             // Save file
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);

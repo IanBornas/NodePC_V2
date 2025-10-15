@@ -1,8 +1,11 @@
 // src/app/components/navbar/navbar.component.ts
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from '../../services/auth.service';
+import { Customer } from '../../models/customer.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -11,9 +14,23 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   menuOpen = false;
   cartCount = 0;
+  currentUser: Customer | null = null;
+  private authSubscription: Subscription = new Subscription();
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.authSubscription = this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription.unsubscribe();
+  }
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
@@ -23,6 +40,18 @@ export class NavbarComponent {
   closeMenu(): void {
     this.menuOpen = false;
     document.body.style.overflow = '';
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.closeMenu();
+  }
+
+  getUserDisplayName(): string {
+    if (!this.currentUser) return '';
+    return this.currentUser.firstName && this.currentUser.lastName
+      ? `${this.currentUser.firstName} ${this.currentUser.lastName}`
+      : this.currentUser.username;
   }
 
   @HostListener('window:resize')
